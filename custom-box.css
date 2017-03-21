@@ -1,0 +1,15 @@
+#custom-box{display: flex; font-family: Montserrat, "Helvetica Neue", sans-serif}
+#custom-box-panel{ overflow: auto; height: 420px; width: 420px;}
+
+#custom-box-canvas{border: solid 1px #ccc; }
+#custom-box h3{margin-bottom: .5em;}
+#custom-box .custom-box-form-section {margin-bottom: 1em;border: solid 1px #ccc; background-color: #eeeeec; border-radius: 4px; overflow: hidden;}
+#custom-box .custom-box-form-section h4{padding: .5em; margin: 0;}
+#custom-box .custom-box-form-section-content{padding: 1.2em 1em .5em 1em; background-color: #f9f9f9}
+#custom-box .custom-box-form-section-content .field{display: flex;}
+#custom-box .custom-box-form-section-content label{margin-right: 2em; width: 4em;}
+#custom-box .custom-box-form-section-content .field-element{ flex-grow: 2;}
+#custom-box .custom-box-form-section-content .range-label{font-size: .8em;text-align: right;margin-left: .5em;}
+#custom-box .custom-box-form-section-content .box-color-btn{display: inline-block;width: 1.4em; height: 1.4em; margin: 0 .1em; border-radius: 2px;
+  box-shadow: 0px 0px 4px 0px rgba(213,213,213,0.75); }
+#custom-box .custom-box-form-section-content .box-color-btn:hover{cursor: pointer; }

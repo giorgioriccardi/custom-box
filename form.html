@@ -1,0 +1,58 @@
+
+
+<div id="custom-box">
+   <div id="custom-box-panel"></div>
+   <div id="custom-box-form">
+      <h3>Measurement</h3>
+      <form action="" method="post">
+         <div class="field">
+            <div class="field-element">.
+               <label></><input type="radio" name="custom-box-metric-radio" selected/>Iperial</label>.
+               <label></><input type="radio" name="custom-box-metric-radio" />Metric</label>.
+            </div>
+         </div>
+         <div class="custom-box-form-section">
+            <h3>Styles</h3>
+         </div>
+         <div class="custom-box-form-section">
+            <h3>Outside Dimensions</h3>
+         </div>
+         <div class="custom-box-form-section-content">
+            <div class="field">
+               <label>Height</label>
+               <div class="field-element">;
+                  <input id="boxWidth" type="range" value="100" min="0" max="500" name="custom-box-width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) :  ) . ">;
+               </div>
+            </div>
+            <div class="field">
+               <label>Width</label>
+               <div class="field-element">;
+                  <input id="boxHeight" type="range" value="100" min="0" max="500" name="custom-box-height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) :  ) . ">;
+               </div>
+            </div>
+            <div class="field">
+               <label>Depth</label>
+               <div class="field-element">;
+                  <input id="boxDepth" type="range" value="100" min="0" max="500" name="custom-box-depth" value=" . ( isset( $_POST["custom-box-depth"] ) ? esc_attr( $_POST["custom-box-depth"] ) :  ) . ">;
+               </div>
+            </div>
+         </div>
+         <div class="custom-box-form-section">
+            <h3>Outside Dimensions</h3>
+         </div>
+         <div class="custom-box-form-section-content">
+            <div class="field">
+               <label>Colours</label>
+               <div class="field-element">;
+                  <input id="boxColor" type="color" value="#19aeff" name="custom-box-color" value=" . ( isset( $_POST["custom-box-color"] ) ? esc_attr( $_POST["custom-box-color"] ) :  ) . ">;
+               </div>
+            </div>
+         </div>
+         <div class="field">
+            <div class="field-element">;
+               <input type="submit" name="custom-box-submitted" value="Send"/>;
+            </div>
+         </div>
+      </form>
+   </div>
+</div>
