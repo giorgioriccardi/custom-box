@@ -47,21 +47,21 @@ function html_custom_box_code() {
 				'               <div class="field">'.
 				'                  <label>Width</label>'.
 				'                  <div class="field-element">'.
-				'                     <input id="boxWidth" type="range" value="140" min="0" max="200" name="custom-box-width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) :  ) . ">'.
+				'                     <input id="boxWidth" type="range" onchange="showValue(this.value)" value="140" min="0" max="200" name="custom-box-width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) :  ) . ">'.
 				'                  </div>'.
 				'                  <div class="range-label"><span id="boxWidthLabel"></span> Inches</div>'.
 				'               </div>'.
 				'               <div class="field">'.
 				'                  <label>Height</label>'.
 				'                  <div class="field-element">'.
-				'                     <input id="boxHeight" type="range" value="60" min="0" max="200" name="custom-box-height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) :  ) . ">'.
+				'                     <input id="boxHeight" type="range" onchange="showValue(this.value)" value="60" min="0" max="200" name="custom-box-height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) :  ) . ">'.
 				'                  </div>'.
 				'                  <div class="range-label"><span id="boxHeightLabel"></span> Inches</div>'.
 				'               </div>'.
 				'               <div class="field">'.
 				'                  <label>Depth</label>'.
 				'                  <div class="field-element">'.
-				'                     <input id="boxDepth" type="range" value="90" min="0" max="200" name="custom-box-depth" value=" . ( isset( $_POST["custom-box-depth"] ) ? esc_attr( $_POST["custom-box-depth"] ) :  ) . ">'.
+				'                     <input id="boxDepth" type="range" onchange="showValue(this.value)" value="90" min="0" max="200" name="custom-box-depth" value=" . ( isset( $_POST["custom-box-depth"] ) ? esc_attr( $_POST["custom-box-depth"] ) :  ) . ">'.
 				'                  </div>'.
 				'                  <div class="range-label"><span id="boxDepthLabel"></span> Inches</div>'.
 				'               </div>'.
@@ -109,6 +109,10 @@ function html_custom_box_code() {
 				'      </form>'.
 				'   </div>'.
 				'</div>';
+				echo '<div>'.
+					// '<input type="range" min="0" max="50" value="0" step="5" onchange="showValue(this.value)" />'.
+					'<span id="range">3</span> Kg'.
+					'</div>';
 }
 
 
