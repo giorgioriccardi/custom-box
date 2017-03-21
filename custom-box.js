@@ -4,6 +4,7 @@
 var canvasWidth  = 400;
 var canvasHeight = 400;
 var box = {w: 140, h: 60, d: 90, color: '#494f55'};
+var wheelSize = {w:22, h:22};
 
 var boxWidthInput, boxHeightInput,boxDepthInput,boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel;
 
@@ -30,8 +31,14 @@ var canvas = $('<canvas/>',{'class':'custom-box-canvas',id: 'custom-box-canvas'}
   	//boxColorInput.change(function() {draw(ctx);});
     $('.box-color-btn').click(function(event){
       event.preventDefault();
-      console.log("this", $(this).attr('box-color'));
       box.color = $(this).attr('box-color');
+      draw(ctx);
+    });
+
+	$('.box-wheel-btn').click(function(event){
+      event.preventDefault();
+      box.wheel = $(this).attr('box-wheel');
+	  console.log("box", box);
       draw(ctx);
     });
 
@@ -40,7 +47,8 @@ var canvas = $('<canvas/>',{'class':'custom-box-canvas',id: 'custom-box-canvas'}
 // Animation function
 var draw = function(ctx){
   // clear the canvas
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+	ctx.globalCompositeOperation='destination-over';
+   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
 	box.w = boxWidthInput.val();
 	box.h = boxHeightInput.val();
@@ -49,6 +57,16 @@ var draw = function(ctx){
   boxWidthLabel.text(box.w);
   boxHeightLabel.text(box.h);
   boxDepthLabel.text(box.d);
+
+    // draw the wheels
+  if(typeof box.wheel != 'undefined'){
+		drawWheel(ctx, canvasWidth/2,
+    canvasHeight/2 + box.h/2,
+    Number(box.w),
+    Number(box.d),
+    Number(box.h));
+	}
+ 
   // draw the cube
 	drawCube(ctx,
     canvasWidth/2,
@@ -59,11 +77,18 @@ var draw = function(ctx){
     box.color
   );
 
-  //requestAnimationFrame(draw(ctx));
-
-
 }
 
+var drawWheel = function(ctx,x, y, wx, wy, h){
+	var wheel = new Image();
+	wheel.onload = function() {
+		console.log("wheel", wheel);
+		ctx.drawImage(wheel, x - wx, y - wx * 0.5);
+		ctx.drawImage(wheel,x-wheelSize.w*1.5, y-wheelSize.h*0.5);
+		ctx.drawImage(wheel,x + wy -wheelSize.w, y - wy * 0.5);
+	}
+	wheel.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/"+box.wheel+".svg";
+};
 // Colour adjustment function
 // Nicked from http://stackoverflow.com/questions/5560248
 function shadeColor(color, percent) {

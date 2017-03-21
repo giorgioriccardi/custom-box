@@ -21,7 +21,7 @@ function html_custom_box_code() {
 	echo 	'<div id="custom-box">'.
 				'   <div id="custom-box-panel"></div>'.
 				'   <div id="custom-box-form">'.
-				'      <h3>Measurement</h3>'.
+				'      <h3>Measurement </h3>'.
 				'      <form action="" method="post">'.
 				'         <div class="field">'.
 				'            <div class="field-element">.'.
@@ -30,7 +30,16 @@ function html_custom_box_code() {
 				'            </div>'.
 				'         </div>'.
 				'         <div class="custom-box-form-section">'.
-				'            <h4>Styles</h4>'.
+				'            <h4>Wheel</h4>'.
+				'            <div class="custom-box-form-section-content">'.
+				'               <div class="field">'.
+				'                  <div class="field-element">'.
+				'                     <div class="box-wheel-btn" style="background: url(\''.plugins_url().'/custom-box/assets/de.svg\')" no-repeat center center; " box-wheel="de"></div>'.
+				'                     <div class="box-wheel-btn" style="background: url(\''.plugins_url().'/custom-box/assets/it.svg\')" no-repeat center center; " box-wheel="it"></div>'.
+				'                     <div class="box-wheel-btn" style="background: url(\''.plugins_url().'/custom-box/assets/remove.png\')" no-repeat center center; "></div>'.
+				'                  </div>'.
+				'               </div>'.
+				'            </div>'.
 				'         </div>'.
 				'         <div class="custom-box-form-section">'.
 				'            <h4>Outside Dimensions</h4>'.

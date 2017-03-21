@@ -13,3 +13,7 @@
 #custom-box .custom-box-form-section-content .box-color-btn{display: inline-block;width: 1.4em; height: 1.4em; margin: 0 .1em; border-radius: 2px;
   box-shadow: 0px 0px 4px 0px rgba(213,213,213,0.75); }
 #custom-box .custom-box-form-section-content .box-color-btn:hover{cursor: pointer; }
+
+#custom-box .custom-box-form-section-content .box-wheel-btn{display: inline-block;width: 22px; height: 22px; margin: 0 .1em; font-size: 42px; color: #666; font-weight: bold;}
+#custom-box .custom-box-form-section-content .box-wheel-btn:hover{cursor: pointer; }
+
