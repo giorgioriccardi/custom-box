@@ -138,7 +138,49 @@ var drawCube = function(ctx, x, y, wx, wy, h, color) {
 
 }
 
-function showValue(newValue)
-{
-	document.getElementById("range").innerHTML=newValue;
+// function showValue(newValue)
+// {
+// 	document.getElementById("range").innerHTML=newValue;
+// }
+
+var convfact = 5000;
+
+function doweight(form) {
+    vol = form.depth.value * form.width.value * form.height.value;
+    volw = vol / form.div.value;
+    b = volw - parseInt(volw);
+    if (b <= .5 && 0 < b && convfact == 5000) {
+        c = .5;
+    } else // if( (.5 < b) && (b < 1 ) )
+    {
+        c = 1;
+    }
+    if (b == 0) c = 0;
+    fweight = volw - b + c;
+    if (vol != 0 && (isNaN(fweight) || fweight < 1)) fweight = 1;
+    form.answer.value = parseFloat(fweight);
+
+    return 1;
+}
+
+function changeunits(element) {
+    un = element.value;
+    conv = 1;
+    if ((un == "met" && convfact == 5000) || (un == "imp" && convfact == 138.4)) return;
+    if (un == "imp") {
+        lenunt = "in.gif";
+        wgtunt = "lb.gif";
+        convfact = 138.4;
+    } else {
+        lenunt = "cm.gif";
+        wgtunt = "kg.gif";
+        convfact = 5000;
+    }
+    document.images["LENIM"].src = "../art/" + lenunt;
+    document.images["HIGIM"].src = "../art/" + lenunt;
+    document.images["WIDIM"].src = "../art/" + lenunt;
+    document.images["VOLIM"].src = "../art/" + wgtunt;
+    form = element.form;
+    form.div.value = convfact;
+    doweight(form);
 }
