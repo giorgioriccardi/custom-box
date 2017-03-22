@@ -2,7 +2,7 @@
 
 var canvasWidth = 400;
 var canvasHeight = 400;
-var box = { w: 140, h: 60, d: 90, color: '#ff0000' };
+var box = { w: 140, h: 60, d: 90, color: '#ff0000', units: "metric" };
 var wheelSize = { w: 22, h: 22 };
 
 var boxWidthInput, boxHeightInput, boxDepthInput, boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel;
@@ -37,6 +37,13 @@ jQuery(document).ready(function($) {
     $('.box-wheel-btn').click(function(event) {
         event.preventDefault();
         box.wheel = $(this).attr('box-wheel');
+        console.log("box", box);
+        draw(ctx);
+    });
+	
+	 $('.box-units-radio').click(function(event) {
+        event.preventDefault();
+        box.units = $(this).val();
         console.log("box", box);
         draw(ctx);
     });
@@ -75,6 +82,8 @@ var draw = function(ctx) {
         Number(box.h),
         box.color
     );
+	
+	doWeight(ctx,box);
 
 }
 
@@ -86,7 +95,9 @@ var drawWheel = function(ctx, x, y, wx, wy, h) {
         ctx.drawImage(wheel, x - wheelSize.w * 1.5, y - wheelSize.h * 0.5);
         ctx.drawImage(wheel, x + wy - wheelSize.w, y - wy * 0.5);
     }
+    // wheel.src = location.pathname + "wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
     wheel.src = "http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
+    
 };
 // Colour adjustment function
 // Nicked from http://stackoverflow.com/questions/5560248
@@ -143,11 +154,24 @@ var drawCube = function(ctx, x, y, wx, wy, h, color) {
 // 	document.getElementById("range").innerHTML=newValue;
 // }
 
-var convfact = 5000;
+var MEASUREMENT_UNITS = {"imperial":{"conversionFactor":138.4, "lengthLabel":"in", "weightLabel":"lb"},
+						"metric":{"conversionFactor":5000, "lengthLabel":"cm", "weightLabel":"kg"}};
 
-function doweight(form) {
-    vol = form.depth.value * form.width.value * form.height.value;
-    volw = vol / form.div.value;
+
+var drawWeightIcon = function(ctx, x, y) {
+	var weightIcon = new Image();
+	// weightIcon.src = location.pathname + "wp-content/plugins/custom-box/assets/weight-icon.png";
+    weightIcon.src = "    http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/weight-icon.png";
+    weightIcon.onload = function() {
+        ctx.drawImage(weightIcon, x - weightIcon.width -10, y - weightIcon.height);
+    }
+};
+
+var doWeight = function(ctx, box) {
+    var vol = box.w * box.h * box.d;
+	var convfact = MEASUREMENT_UNITS[box.units].conversionFactor;
+
+    volw = vol / convfact; //form.div.value;
     b = volw - parseInt(volw);
     if (b <= .5 && 0 < b && convfact == 5000) {
         c = .5;
@@ -158,11 +182,16 @@ function doweight(form) {
     if (b == 0) c = 0;
     fweight = volw - b + c;
     if (vol != 0 && (isNaN(fweight) || fweight < 1)) fweight = 1;
-    form.answer.value = parseFloat(fweight);
+    //form.answer.value = parseFloat(fweight);
+	
+	var textPosition = {"x": 62, y: canvasHeight-10}
+	drawWeightIcon(ctx, textPosition.x, textPosition.y);
+	ctx.font = "32px Arial";
+	ctx.fillStyle = "#fff";
+	ctx.fillText(""+parseFloat(fweight) + " " + MEASUREMENT_UNITS[box.units].weightLabel,textPosition.x,textPosition.y);
+};
 
-    return 1;
-}
-
+/*
 function changeunits(element) {
     un = element.value;
     conv = 1;
@@ -183,4 +212,4 @@ function changeunits(element) {
     form = element.form;
     form.div.value = convfact;
     doweight(form);
-}
+}*/
