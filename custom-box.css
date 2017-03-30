@@ -31,9 +31,23 @@
     margin: 0;
 }
 
+#custom-box .custom-box-form-section-inline{
+  position: relative;
+}
+
+#custom-box .custom-box-form-section-inline h4 {
+  display: inline-block;
+}
+#custom-box .custom-box-form-section-inline .custom-box-form-section-inline-content {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+
 #custom-box .custom-box-form-section-content {
     padding: 1.2em 1em .5em 1em;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9
 }
 
 #custom-box .custom-box-form-section-content .field {

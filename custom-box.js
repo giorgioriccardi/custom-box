@@ -3,18 +3,26 @@
 var canvasWidth = 400;
 var canvasHeight = 400;
 var box = { w: 140, h: 60, d: 90, color: '#ff0000', units: "metric" };
-var wheelSize = { w: 22, h: 22 };
+var wheelSize = { w: 32, h: 32 };
 
 var boxWidthInput, boxHeightInput, boxDepthInput, boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel;
+var weightIcon = new Image();
+var wheelImg = new Image();
+var cornerImg = new Image();
+var handleImg = new Image();
+var catcheImg = new Image();
+
+var boxAngle = 0.22;
+
 
 jQuery(document).ready(function($) {
     // Code that uses jQuery's $ can follow here.
 
+    loadAssets();
     var canvas = $('<canvas/>', { 'class': 'custom-box-canvas', id: 'custom-box-canvas' }).prop({ width: canvasWidth, height: canvasHeight });
     $('#custom-box-panel').append(canvas);
     var ctx = canvas[0].getContext('2d');
     // Pick out the form elements for easy access later
-    console.log("box", box);
     boxWidthInput = $('#boxWidth');
     boxHeightInput = $('#boxHeight');
     boxDepthInput = $('#boxDepth');
@@ -23,32 +31,46 @@ jQuery(document).ready(function($) {
     boxHeightLabel = $('#boxHeightLabel');
     boxDepthLabel = $('#boxDepthLabel');
 
-    draw(ctx);
+    weightIcon.onload = function() {weightIcon.loaded = true;draw(ctx);};
+
     boxWidthInput.on("input change", function() { draw(ctx); });
     boxHeightInput.on("input change", function() { draw(ctx); });
     boxDepthInput.on("input change", function() { draw(ctx); });
-    //boxColorInput.change(function() {draw(ctx);});
     $('.box-color-btn').click(function(event) {
         event.preventDefault();
         box.color = $(this).attr('box-color');
         draw(ctx);
     });
 
-    $('.box-wheel-btn').click(function(event) {
-        event.preventDefault();
-        box.wheel = $(this).attr('box-wheel');
-        console.log("box", box);
-        draw(ctx);
-    });
-	
-	 $('.box-units-radio').click(function(event) {
-        event.preventDefault();
-        box.units = $(this).val();
-        console.log("box", box);
-        draw(ctx);
+    $('#boxToggleWheel').change(function() {box.wheel = this.checked;draw(ctx);});
+    $('#boxToggleCorner').change(function() {box.corner = this.checked;draw(ctx);});
+    $('#boxToggleHandle').change(function() {box.handle = this.checked;draw(ctx);});
+    $('#boxToggleCatche').change(function() {box.catche = this.checked;draw(ctx);});
+  	$('.box-units-radio').click(function(event) {
+          event.preventDefault();
+          box.units = $(this).val();
+          draw(ctx);
     });
 
 });
+
+var loadAssets = function(ctx){
+  weightIcon.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/weight-icon.png";
+
+
+  wheelImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/blue-wheel.png";
+  wheelImg.onload = function() {wheelImg.loaded = true;};
+
+  cornerImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-corner.png";
+  cornerImg.onload = function() {cornerImg.loaded = true;};
+
+  handleImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-handle.png";
+  handleImg.onload = function() {handleImg.loaded = true; };
+
+  catcheImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-catche.png";
+  catcheImg.onload = function() {catcheImg.loaded = true;};
+
+};
 
 // Animation function
 var draw = function(ctx) {
@@ -56,49 +78,58 @@ var draw = function(ctx) {
     ctx.globalCompositeOperation = 'destination-over';
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    box.w = boxWidthInput.val();
-    box.h = boxHeightInput.val();
-    box.d = boxDepthInput.val();;
+    box.w = Number(boxWidthInput.val());
+    box.h = Number(boxHeightInput.val());
+    box.d = Number(boxDepthInput.val());
     //box.color = boxColorInput.val();
     boxWidthLabel.text(box.w);
     boxHeightLabel.text(box.h);
     boxDepthLabel.text(box.d);
 
-    // draw the wheels
-    if (typeof box.wheel != 'undefined') {
-        drawWheel(ctx, canvasWidth / 2,
-            canvasHeight / 2 + box.h / 2,
-            Number(box.w),
-            Number(box.d),
-            Number(box.h));
-    }
+    if(box.handle)
+      drawHandle(ctx, canvasWidth / 2,canvasHeight / 2 + box.h / 2,box);
+    if(box.catche)
+      drawCatche(ctx, canvasWidth / 2,canvasHeight / 2 + box.h / 2,box);
 
-    // draw the cube
-    drawCube(ctx,
-        canvasWidth / 2,
-        canvasHeight / 2 + box.h / 2,
-        Number(box.w),
-        Number(box.d),
-        Number(box.h),
-        box.color
-    );
-	
+    drawCube(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
+
+    if(box.wheel)
+      drawWheel(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
+
+
 	doWeight(ctx,box);
 
 }
 
-var drawWheel = function(ctx, x, y, wx, wy, h) {
-    var wheel = new Image();
-    wheel.onload = function() {
-        console.log("wheel", wheel);
-        ctx.drawImage(wheel, x - wx, y - wx * 0.5);
-        ctx.drawImage(wheel, x - wheelSize.w * 1.5, y - wheelSize.h * 0.5);
-        ctx.drawImage(wheel, x + wy - wheelSize.w, y - wy * 0.5);
+var drawWheel = function(ctx, x, y, box) {
+    if(wheelImg.loaded){
+      ctx.drawImage(wheelImg, x - box.w, y - box.w * boxAngle);
+      ctx.drawImage(wheelImg, x - wheelSize.w * boxAngle*3, y - wheelSize.h * boxAngle);
+      ctx.drawImage(wheelImg, x + box.d - wheelSize.w, y - box.d * boxAngle);
     }
-    // wheel.src = location.pathname + "wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
-    wheel.src = "http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
-    
 };
+
+var drawHandle = function(ctx, x, y, box) {
+  console.log("handleImg", box,box.h,  y,Math.trunc(box.h*0.5) );
+    if(handleImg.loaded){
+      ctx.drawImage(handleImg, x - box.w/2- handleImg.width/2, y -box.h/2 - handleImg.height);
+    }
+};
+
+var drawCatche = function(ctx, x, y, box) {
+    if(catcheImg.loaded){
+      ctx.drawImage(catcheImg, x - box.w*0.9,  y - box.w * boxAngle -box.h*2/3 );
+      ctx.drawImage(catcheImg, x - box.w*0.3 * boxAngle*3, y - box.w * boxAngle/3 -box.h*2/3 );
+    }
+};
+
+var drawHandle = function(ctx, x, y, box) {
+  console.log("handleImg", box,box.h,  y,Math.trunc(box.h*0.5) );
+    if(handleImg.loaded){
+      ctx.drawImage(handleImg, x - box.w/2- handleImg.width/2, y -box.h/2 - handleImg.height);
+    }
+};
+
 // Colour adjustment function
 // Nicked from http://stackoverflow.com/questions/5560248
 function shadeColor(color, percent) {
@@ -112,38 +143,37 @@ function shadeColor(color, percent) {
 }
 
 // Draw a cube to the specified specs
-var drawCube = function(ctx, x, y, wx, wy, h, color) {
-
+var drawCube = function(ctx, x, y, box) {
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.lineTo(x - wx, y - wx * 0.5);
-    ctx.lineTo(x - wx, y - h - wx * 0.5);
-    ctx.lineTo(x, y - h * 1);
+    ctx.lineTo(x - box.w, y - box.w * boxAngle);
+    ctx.lineTo(x - box.w, y - box.h - box.w * boxAngle);
+    ctx.lineTo(x, y - box.h * 1);
     ctx.closePath();
-    ctx.fillStyle = shadeColor(color, -10);
-    ctx.strokeStyle = color;
+    ctx.fillStyle = shadeColor(box.color, -10);
+    ctx.strokeStyle = box.color;
     ctx.stroke();
     ctx.fill();
 
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.lineTo(x + wy, y - wy * 0.5);
-    ctx.lineTo(x + wy, y - h - wy * 0.5);
-    ctx.lineTo(x, y - h * 1);
+    ctx.lineTo(x + box.d, y - box.d * boxAngle);
+    ctx.lineTo(x + box.d, y - box.h - box.d * boxAngle);
+    ctx.lineTo(x, y - box.h * 1);
     ctx.closePath();
-    ctx.fillStyle = shadeColor(color, 10);
-    ctx.strokeStyle = shadeColor(color, 50);
+    ctx.fillStyle = shadeColor(box.color, 10);
+    ctx.strokeStyle = shadeColor(box.color, 50);
     ctx.stroke();
     ctx.fill();
 
     ctx.beginPath();
-    ctx.moveTo(x, y - h);
-    ctx.lineTo(x - wx, y - h - wx * 0.5);
-    ctx.lineTo(x - wx + wy, y - h - (wx * 0.5 + wy * 0.5));
-    ctx.lineTo(x + wy, y - h - wy * 0.5);
+    ctx.moveTo(x, y - box.h);
+    ctx.lineTo(x - box.w, y - box.h - box.w * boxAngle);
+    ctx.lineTo(x - box.w + box.d, y - box.h - (box.w * boxAngle + box.d * boxAngle));
+    ctx.lineTo(x + box.d, y - box.h - box.d * boxAngle);
     ctx.closePath();
-    ctx.fillStyle = shadeColor(color, 20);
-    ctx.strokeStyle = shadeColor(color, 60);
+    ctx.fillStyle = shadeColor(box.color, 20);
+    ctx.strokeStyle = shadeColor(box.color, 60);
     ctx.stroke();
     ctx.fill();
 
@@ -159,12 +189,9 @@ var MEASUREMENT_UNITS = {"imperial":{"conversionFactor":138.4, "lengthLabel":"in
 
 
 var drawWeightIcon = function(ctx, x, y) {
-	var weightIcon = new Image();
-	// weightIcon.src = location.pathname + "wp-content/plugins/custom-box/assets/weight-icon.png";
-    weightIcon.src = "    http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/weight-icon.png";
-    weightIcon.onload = function() {
-        ctx.drawImage(weightIcon, x - weightIcon.width -10, y - weightIcon.height);
-    }
+    if(weightIcon.loaded)
+      ctx.drawImage(weightIcon, x - weightIcon.width -10, y - weightIcon.height);
+
 };
 
 var doWeight = function(ctx, box) {
@@ -183,7 +210,7 @@ var doWeight = function(ctx, box) {
     fweight = volw - b + c;
     if (vol != 0 && (isNaN(fweight) || fweight < 1)) fweight = 1;
     //form.answer.value = parseFloat(fweight);
-	
+
 	var textPosition = {"x": 62, y: canvasHeight-10}
 	drawWeightIcon(ctx, textPosition.x, textPosition.y);
 	ctx.font = "32px Arial";
