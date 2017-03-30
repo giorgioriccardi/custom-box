@@ -11,8 +11,10 @@ function wptuts_scripts_basic(){
 	wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', array(), null, false );
     wp_register_script('custom-box-js', plugins_url( 'custom-box.js', __FILE__ ), array( 'jquery' ), '1', true );
     wp_enqueue_script('custom-box-js');
-    wp_register_style( 'custom-box-style', plugins_url( 'custom-box.css', __FILE__ ), array(), '1', 'all' );
+		wp_register_style( 'custom-box-style', plugins_url( 'custom-box.css', __FILE__ ), array(), '1', 'all' );
     wp_enqueue_style( 'custom-box-style' );
+		wp_register_style( 'custom-box-style-toggle', plugins_url( 'toggle.css', __FILE__ ), array(), '1', 'all' );
+    wp_enqueue_style( 'custom-box-style-toggle' );
 }
 
 add_action( 'wp_enqueue_scripts', 'wptuts_scripts_basic' );
@@ -27,18 +29,6 @@ function html_custom_box_code() {
 				'            <div class="field-element">.'.
 				'               <label></><input type="radio" name="custom-box-metric-radio" value="imperial" selected class="box-units-radio" />Iperial</label>.'.
 				'               <label></><input type="radio" name="custom-box-metric-radio" value="metric" class="box-units-radio" />Metric</label>.'.
-				'            </div>'.
-				'         </div>'.
-				'         <div class="custom-box-form-section">'.
-				'            <h4>Wheel</h4>'.
-				'            <div class="custom-box-form-section-content">'.
-				'               <div class="field">'.
-				'                  <div class="field-element">'.
-				'                     <div class="box-wheel-btn" style="background: url(\''.plugins_url().'/custom-box/assets/de.svg\')" no-repeat center center; " box-wheel="de"></div>'.
-				'                     <div class="box-wheel-btn" style="background: url(\''.plugins_url().'/custom-box/assets/it.svg\')" no-repeat center center; " box-wheel="it"></div>'.
-				'                     <div class="box-wheel-btn" style="background: url(\''.plugins_url().'/custom-box/assets/remove.png\')" no-repeat center center; "></div>'.
-				'                  </div>'.
-				'               </div>'.
 				'            </div>'.
 				'         </div>'.
 				'         <div class="custom-box-form-section">'.
@@ -101,6 +91,34 @@ function html_custom_box_code() {
 				'               </div>'.
 				'            </div>'.
 				'         </div>'.
+				'         <div class="custom-box-form-section custom-box-form-section-inline">'.
+				'            <h4>Wheel </h4>'.
+				'            <div class="custom-box-form-section-inline-content">'.
+				'              <input type="checkbox" id="boxToggleWheel" class="toggle">'.
+				'              <label for="boxToggleWheel"></label>'.
+				'            </div>'.
+				'         </div>'.
+				'         <div class="custom-box-form-section custom-box-form-section-inline">'.
+				'            <h4>Corners </h4>'.
+				'            <div class="custom-box-form-section-inline-content">'.
+				'              <input type="checkbox" id="boxToggleCorner" class="toggle">'.
+				'              <label for="boxToggleCorner"></label>'.
+				'            </div>'.
+				'         </div>'.
+				'         <div class="custom-box-form-section custom-box-form-section-inline">'.
+				'            <h4>Handles </h4>'.
+				'            <div class="custom-box-form-section-inline-content">'.
+				'              <input type="checkbox" id="boxToggleHandle" class="toggle">'.
+				'              <label for="boxToggleHandle"></label>'.
+				'            </div>'.
+				'         </div>'.
+				'         <div class="custom-box-form-section custom-box-form-section-inline">'.
+				'            <h4>Catches </h4>'.
+				'            <div class="custom-box-form-section-inline-content">'.
+				'              <input type="checkbox" id="boxToggleCatche" class="toggle">'.
+				'              <label for="boxToggleCatche"></label>'.
+				'            </div>'.
+				'         </div>'.
 				'         <div class="field">'.
 				'            <div class="field-element">'.
 				'               <input type="submit" name="custom-box-submitted" value="Send"/>'.
@@ -111,8 +129,8 @@ function html_custom_box_code() {
 				'</div>';
 				echo '<div>'.
 					// '<input type="range" min="0" max="50" value="0" step="5" onchange="showValue(this.value)" />'.
-					// '<input name="answer" size="7" value="0" onchange="doweight(this.form);return 1;" onfocus="this.form.length.focus();return 1" type="text">'.
-					// '<span id="range">3</span> Kg'.
+					'<input name="answer" size="7" value="0" onchange="doweight(this.form);return 1;" onfocus="this.form.length.focus();return 1" type="text">'.
+					'<span id="range">3</span> Kg'.
 					'</div>';
 }
 
