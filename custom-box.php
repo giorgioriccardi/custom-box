@@ -124,14 +124,10 @@ function html_custom_box_code() {
 				'               <input type="submit" name="custom-box-submitted" value="Send"/>'.
 				'            </div>'.
 				'         </div>'.
+				'<input type="text" id="aaa" />'.
 				'      </form>'.
 				'   </div>'.
 				'</div>';
-				echo '<div>'.
-					// '<input type="range" min="0" max="50" value="0" step="5" onchange="showValue(this.value)" />'.
-					'<input name="answer" size="7" value="0" onchange="doweight(this.form);return 1;" onfocus="this.form.length.focus();return 1" type="text">'.
-					'<span id="range">3</span> Kg'.
-					'</div>';
 }
 
 
