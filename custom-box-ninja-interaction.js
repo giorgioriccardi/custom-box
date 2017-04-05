@@ -16,27 +16,30 @@ var ninjaFormController;
 
 var boxAngle = 0.22;
 
+var hiddenBoxSize;
+
 jQuery(document).ready(function($) {
     // Code that uses jQuery's $ can follow here.
 
     loadAssets();
     var ctx  = initCanvas($);
     initInputFields($, ctx);
+    initNinjaFormController($);
+
     weightIcon.onload = function() {weightIcon.loaded = true;draw(ctx);};
 
 
 });
 
 var loadAssets = function(ctx){
-  console.log("pluginUrl", urls);
-  weightIcon.src = urls.pluginUrl + "/custom-box/assets/weight-icon.png";
-  wheelImg.src = urls.pluginUrl + "/custom-box/assets/blue-wheel.png";
+  weightIcon.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/weight-icon.png";
+  wheelImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/blue-wheel.png";
   wheelImg.onload = function() {wheelImg.loaded = true;};
-  cornerImg.src = urls.pluginUrl + "/custom-box/assets/metal-corner.png";
+  cornerImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-corner.png";
   cornerImg.onload = function() {cornerImg.loaded = true;};
-  handleImg.src = urls.pluginUrl + "/custom-box/assets/metal-handle.png";
+  handleImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-handle.png";
   handleImg.onload = function() {handleImg.loaded = true; };
-  catcheImg.src = urls.pluginUrl + "/custom-box/assets/metal-catche.png";
+  catcheImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-catche.png";
   catcheImg.onload = function() {catcheImg.loaded = true;};
 };
 
@@ -44,12 +47,10 @@ var initInputFields = function($, ctx){
   boxWidthInput = $('#boxWidth');
   boxHeightInput = $('#boxHeight');
   boxDepthInput = $('#boxDepth');
-  boxColorInput = $('#boxHiddenColor');
+  boxColorInput = $('#boxColor');
   boxWidthLabel = $('#boxWidthLabel');
   boxHeightLabel = $('#boxHeightLabel');
   boxDepthLabel = $('#boxDepthLabel');
-
-
 
   boxWidthInput.on("input change", function() { draw(ctx); });
   boxHeightInput.on("input change", function() { draw(ctx); });
@@ -57,7 +58,6 @@ var initInputFields = function($, ctx){
   $('.box-color-btn').click(function(event) {
       event.preventDefault();
       box.color = $(this).attr('box-color');
-      boxColorInput.val(box.color);
       draw(ctx);
   });
 
@@ -73,7 +73,29 @@ var initInputFields = function($, ctx){
 
 };
 
+var initNinjaFormController = function($){
+  ninjaFormController = Marionette.Object.extend({
+    initialize: function() {
+        // On the Form Submission's field validaiton...
+        var submitChannel = Backbone.Radio.channel( 'submit' );
+        this.listenTo( submitChannel, 'validate:field', this.getBoxData );
 
+        // on the Field's model value change...
+        var fieldsChannel = Backbone.Radio.channel( 'fields' );
+        this.listenTo( fieldsChannel, 'change:modelValue', this.getBoxData );
+    },
+    getBoxData: function( model ) {
+       console.log("model", model);
+       console.log("box", box);
+       hiddenBoxSize = $("#nf-field-24");
+       hiddenBoxSize.val("funziona");
+       console.log("#nf-field-20",hiddenBoxSize);
+     }
+  });
+
+  new ninjaFormController();
+
+};
 
 var initCanvas = function($){
   var canvas = $('<canvas/>', { 'class': 'custom-box-canvas', id: 'custom-box-canvas' }).prop({ width: canvasWidth, height: canvasHeight });
