@@ -64,7 +64,6 @@
 
 #custom-box .custom-box-form-section-content label {
     margin-right: 2em;
-    width: 4em;
 }
 
 #custom-box .custom-box-form-section-content .field-element {
@@ -107,4 +106,26 @@
 
 #custom-box-form-order .field{
   margin: .5em 0;
+}
+
+#custom-box-form-order .field label{
+  font-weight: bold;
+  margin-right: 1em;
+  padding: 0.625em 0;
+  width: 6em;
+}
+
+#custom-box-form-order .field p{
+  margin: 1em 0 0 0;
+}
+
+#dragandrophandler
+{
+  border:2px dotted #0B85A1;
+  width:400px;
+  color:#92AAB0;
+  text-align:left;vertical-align:middle;
+  padding:10px 10px 10 10px;
+  margin-bottom:10px;
+  font-size:200%;
 }

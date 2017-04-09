@@ -23,13 +23,13 @@ add_action( 'wp_enqueue_scripts', 'wptuts_scripts_basic' );
 function html_custom_box_code() {
 	echo '<div id="custom-box">'.
 '	<h2>Place an order today</h2>'.
-'	<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" method="post" >'.
+'	<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" method="post" enctype="multipart/form-data">'.
 '		<div id="custom-box-form">'.
 '			<div id="custom-box-form-customize">'.
 '				<div class="custom-box-form-section custom-box-form-section-inline">'.
 '					<h4>Measurement</h4>'.
 '					<div class="custom-box-form-section-inline-content">'.
-'						<label></><input type="radio" name="custom-box-metric-radio" value="imperial" selected class="box-units-radio" />Iperial</label>'.
+'						<label></><input type="radio" name="custom-box-metric-radio" value="imperial" selected="selected" class="box-units-radio" />Iperial</label>'.
 '						<label></><input type="radio" name="custom-box-metric-radio" value="metric" class="box-units-radio" />Metric</label>'.
 '					</div>'.
 '				</div>'.
@@ -39,23 +39,23 @@ function html_custom_box_code() {
 '						<div class="field">'.
 '							<label>Width</label>'.
 '							<div class="field-element">'.
-'								<input id="boxWidth" type="range" value="140" min="0" max="200" name="width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) : ) . ">'.
+'								<input id="boxWidth" type="range" value="140" min="0" max="200" name="custom-box-width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) : ) . ">'.
 '							</div>'.
-'							<div class="range-label"><span id="boxWidthLabel"></span> Inches</div>'.
+'							<div class="range-label"><span id="boxWidthLabel"></span> <span class="box-mesaure-unit">in</span></div>'.
 '						</div>'.
 '						<div class="field">'.
 '							<label>Height</label>'.
 '							<div class="field-element">'.
-'								<input id="boxHeight" type="range" value="60" min="0" max="200" name="height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) : ) . ">'.
+'								<input id="boxHeight" type="range" value="60" min="0" max="200" name="custom-box-height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) : ) . ">'.
 '							</div>'.
-'							<div class="range-label"><span id="boxHeightLabel"></span> Inches</div>'.
+'							<div class="range-label"><span id="boxHeightLabel"></span> <span class="box-mesaure-unit">in</span></div>'.
 '						</div>'.
 '						<div class="field">'.
 '							<label>Depth</label>'.
 '							<div class="field-element">'.
-'								<input id="boxDepth" type="range" value="90" min="0" max="200" name="depth" value=" . ( isset( $_POST["custom-box-depth"] ) ? esc_attr( $_POST["custom-box-depth"] ) : ) . ">'.
+'								<input id="boxDepth" type="range" value="90" min="0" max="200" name="custom-box-depth" value=" . ( isset( $_POST["custom-box-depth"] ) ? esc_attr( $_POST["custom-box-depth"] ) : ) . ">'.
 '							</div>'.
-'							<div class="range-label"><span id="boxDepthLabel"></span> Inches</div>'.
+'							<div class="range-label"><span id="boxDepthLabel"></span> <span class="box-mesaure-unit">in</span></div>'.
 '						</div>'.
 '					</div>'.
 '				</div>'.
@@ -64,6 +64,7 @@ function html_custom_box_code() {
 '					<div class="custom-box-form-section-content">'.
 '						<div class="field">'.
 '							<input type="hidden" id="boxHiddenColor" class="toggle" name="custom-box-color">'.
+'             <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="4000000" />'.
 '							<div class="field-element">'.
 '								<div class="box-color-btn" href style="background-color:#fff" box-color="#fff"></div>'.
 '								<div class="box-color-btn" href style="background-color:#e9e9eb" box-color="#e9e9eb"></div>'.
@@ -133,35 +134,40 @@ function html_custom_box_code() {
 '			<div class="custom-box-form-section">'.
 '				<div class="custom-box-form-section-content">'.
 '				<div class="field">'.
+'         <label for="firstname">Firstname</label>'.
 '					<div class="field-element">'.
 '						<input id="firstname" type="text" name="firstname" placeholder="First Name">'.
 '					</div>'.
 '				</div>'.
 '				<div class="field">'.
+'         <label for="lastname">Lastname</label>'.
 '					<div class="field-element">'.
 '						<input id="lastname" type="text" name="lastname" placeholder="Last Name">'.
 '					</div>'.
 '				</div>'.
 '				<div class="field">'.
+'         <label for="email">Email</label>'.
 '					<div class="field-element">'.
 '						<input id="email" type="email" name="email" placeholder="Email">'.
 '					</div>'.
 '				</div>'.
 '				<div class="field">'.
+'         <label for="phone">Phone</label>'.
 '					<div class="field-element">'.
 '						<input id="phone" type="text" name="phone" placeholder="Phone">'.
 '					</div>'.
 '				</div>'.
-'				<p>Please briefly describe your case</p>'.
 '				<div class="field">'.
 '					<div class="field-element">'.
+'	  			  <p>Please briefly describe your case</p>'.
 '						<textarea id="description" cols="3" name="description" placeholder="I would like..." ></textarea>'.
 '					</div>'.
 '				</div>'.
-'				<p>Having trouble describinig it? Fell free to attach a picture (4 mb limit)</p>'.
+'				  <p>Having trouble describinig it? Fell free to attach a picture (4 mb limit)</p>'.
 '				<div class="field">'.
 '					<div class="field-element">'.
 '						 <input type="file" name="box-image" accept="image/*">'.
+//'            <div id="dragandrophandler">Drag & Drop Images Here</div>'.
 '					</div>'.
 '				</div>'.
 '				<div class="field">'.
@@ -175,37 +181,80 @@ function html_custom_box_code() {
 '</div>';
 }
 
+function format_email_order() {
+	// sanitize form values
+	$boxMetric = sanitize_text_field( $_POST["custom-box-metric-radio"] ) == 'Imperial'?'in':'cm';
+	$boxWidth  = sanitize_text_field( $_POST["custom-box-width"] );
+	$boxHeight = sanitize_text_field( $_POST["custom-box-height"] );
+	$boxDepth  = sanitize_text_field( $_POST["custom-box-depth"] );
+	$boxColor  = sanitize_text_field( $_POST["custom-box-color"] );
+	$boxWhell  = sanitize_text_field( $_POST["custom-box-wheel"] ) =='on'?'Yes':'No';
+	$boxCorner  = sanitize_text_field( $_POST["custom-box-corner"] ) =='on'?'Yes':'No';
+	$boxCatche  = sanitize_text_field( $_POST["custom-box-catche"] ) =='on'?'Yes':'No';
+	$boxHandles  = sanitize_text_field( $_POST["custom-box-handle"] ) =='on'?'Yes':'No';
+
+	$firstname  = sanitize_text_field( $_POST["firstname"] );
+	$lastname  = sanitize_text_field( $_POST["lastname"] );
+	$email = sanitize_text_field( $_POST["email"] );
+	$phone = sanitize_text_field( $_POST["phone"] );
+	$description  = sanitize_text_field( $_POST["description"] );
+	$boxImagePath  = sanitize_text_field( $_POST["box-image"] );
+
+	$message = '<style>td{padding: 2em;	}</style>'.
+	'<h2>New case order</h2>'.
+	'<h3>Customer</h3>'.
+	'<table style="border-collapse: collapse; text-align: left;vertical-align:top;"><tbody>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Name</strong></td><td style="padding: .5em 0;">'.$firstname.' '.$lastname.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Email</strong></td><td style="padding: .5em 0;">'.$email.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Phone</strong></td><td style="padding: .5em 0;">'.$phone.'</td></tr>'.
+  '</tbody></table>'.
+	'<h3>Box specification</h3>'.
+	'<table style="border-collapse: collapse; text-align: left;vertical-align:top;"><tbody>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;vertical-align: top;"><strong>Dimension</strong></td>'.
+	'<td style="padding: .5em 0;">Width '.$boxWidth.' '.$boxMetric.'<br />Height '.$boxHeight.' '.$boxMetric.'<br />Depth '.$boxDepth.' '.$boxMetric.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Color</strong></td><td style="padding: .5em 0;">'.$boxColor.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Wheel</strong></td><td style="padding: .5em 0;">'.$boxWhell.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Corner</strong></td><td style="padding: .5em 0;">'.$boxCorner.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Catche</strong></td><td style="padding: .5em 0;">'.$boxCatche.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Handles</strong></td><td style="padding: .5em 0;">'.$boxHandles.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Customer description</strong></td><td style="padding: .5em 0;">'.$description.'</td></tr>'.
+  '</tbody></table>';
+
+
+	//$message = '<div> <b>new order</b> '.$firstname.' </div>';
+
+	return $message;
+
+}
 
 function custom_box_data() {
 
     // if the submit button is clicked, send the email
     if ( isset( $_POST['custom-box-submitted'] ) ) {
 
-        // sanitize form values
-        $boxWidth  = sanitize_text_field( $_POST["custom-box-width"] );
-        $boxHeight = sanitize_text_field( $_POST["custom-box-height"] );
-        $boxDepth  = sanitize_text_field( $_POST["custom-box-depth"] );
-				$boxColor  = sanitize_text_field( $_POST["custom-box-color"] );
-				$boxWhell  = sanitize_text_field( $_POST["custom-box-wheel"] );
-				$boxCorner  = sanitize_text_field( $_POST["custom-box-corner"] );
-				$boxCatche  = sanitize_text_field( $_POST["custom-box-catche"] );
-				$boxHandles  = sanitize_text_field( $_POST["custom-box-handle"] );
 
-				$firstname  = sanitize_text_field( $_POST["firstname"] );
-				$lastname  = sanitize_text_field( $_POST["lastname"] );
+			  $firstname  = sanitize_text_field( $_POST["firstname"] );
+			  $lastname  = sanitize_text_field( $_POST["lastname"] );
 				$email = sanitize_text_field( $_POST["email"] );
-				$phone = sanitize_text_field( $_POST["phone"] );
-				$description  = sanitize_text_field( $_POST["description"] );
-				$boxImagePath  = sanitize_text_field( $_POST["box-image"] );
-
 
 				// get the blog administrator's email address
-				$to = 'aleee.it@gmail.com'; //get_option( 'admin_email' );
+				$to = array('aleee.it@gmail.com','giorgio25b@gmail.com');//get_option( 'admin_email' );
 				$headers = "From: $firstname $lastname <$email>" . "\r\n";
+				$headers = array('Content-Type: text/html; charset=UTF-8',"From: $firstname $lastname <$email>" . "\r\n");
 
-				$message = '<div> <b>new order</b> $boxWidth </div>';
+				$message = format_email_order();
+				//echo $message;
+				if ( ! function_exists( 'wp_handle_upload' ) )
+					require_once( ABSPATH . 'wp-admin/includes/file.php' );
+				$uploadedfile = $_FILES['box-image'];
+				$upload_overrides = array( 'test_form' => false );
+				$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+				if ( $movefile )
+  				$attachments = $movefile[ 'file' ];
+
+
 				// If email has been process for sending, display a success message
-				if ( wp_mail( $to, "new order", $message, $headers ) ) {
+				if ( wp_mail( $to, "new order", $message, $headers , $attachments) ) {
 					echo '<div>';
 					echo '<p>Thanks for contacting me, expect a response soon.</p>';
 					echo '</div>';
@@ -216,14 +265,16 @@ function custom_box_data() {
     }
 }
 
-    function custom_box_shortcode() {
-        ob_start();
-        custom_box_data();
-        html_custom_box_code();
 
-        return ob_get_clean();
-    }
 
-    add_shortcode( 'custom_box', 'custom_box_shortcode' );
+function custom_box_shortcode() {
+    ob_start();
+    custom_box_data();
+    html_custom_box_code();
+
+    return ob_get_clean();
+}
+
+add_shortcode( 'custom_box', 'custom_box_shortcode' );
 
 ?>

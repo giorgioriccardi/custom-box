@@ -23,7 +23,8 @@ jQuery(document).ready(function($) {
     var ctx  = initCanvas($);
     initInputFields($, ctx);
     weightIcon.onload = function() {weightIcon.loaded = true;draw(ctx);};
-
+    if (window.File && window.FileList && window.FileReader)
+      initDragDrop($);
 
 });
 
@@ -60,14 +61,14 @@ var initInputFields = function($, ctx){
       boxColorInput.val(box.color);
       draw(ctx);
   });
-
   $('#boxToggleWheel').change(function() {box.wheel = this.checked;draw(ctx);});
   $('#boxToggleCorner').change(function() {box.corner = this.checked;draw(ctx);});
   $('#boxToggleHandle').change(function() {box.handle = this.checked;draw(ctx);});
   $('#boxToggleCatche').change(function() {box.catche = this.checked;draw(ctx);});
   $('.box-units-radio').click(function(event) {
-        event.preventDefault();
+        //event.preventDefault();
         box.units = $(this).val();
+        $('.box-mesaure-unit').text(MEASUREMENT_UNITS[box.units].lengthLabel);
         draw(ctx);
   });
 
@@ -81,6 +82,32 @@ var initCanvas = function($){
   return canvas[0].getContext('2d');
 };
 
+var FileDragHover = function(e) {
+	e.stopPropagation();
+	e.preventDefault();
+	e.target.className = (e.type == "dragover" ? "hover" : "");
+}
+
+var initDragDrop = function($) {
+  var obj = $("#dragandrophandler");
+  obj.on('dragenter', function (e) {
+     e.stopPropagation();
+     e.preventDefault();
+     $(this).css('border', '2px solid #0B85A1');
+ });
+ obj.on('dragover', function (e){
+      e.stopPropagation();
+      e.preventDefault();
+ });
+ obj.on('drop', function (e) {
+
+      $(this).css('border', '2px dotted #0B85A1');
+      e.preventDefault();
+      var files = e.originalEvent.dataTransfer.files;
+      console.log("files",files);
+
+ });
+}
 // Animation function
 var draw = function(ctx) {
     // clear the canvas
