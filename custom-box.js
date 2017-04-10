@@ -22,6 +22,7 @@ jQuery(document).ready(function($) {
     loadAssets();
     var ctx  = initCanvas($);
     initInputFields($, ctx);
+    initValidation($);
     weightIcon.onload = function() {weightIcon.loaded = true;draw(ctx);};
     if (window.File && window.FileList && window.FileReader)
       initDragDrop($);
@@ -74,6 +75,33 @@ var initInputFields = function($, ctx){
 
 };
 
+var initValidation = function($){
+  $("form[name='custom-box-form']").validate({
+    rules: {
+      firstname: "required",
+      lastname: "required",
+      email: {
+        required: true,
+        email: true
+      },
+      phone: {
+        minlength: 5
+      }
+    },
+    // Specify validation error messages
+    messages: {
+      firstname: "Please enter your firstname",
+      lastname: "Please enter your lastname",
+      phone: {
+        minlength: "Your phone must be at least 5 characters long"
+      },
+      email: "Please enter a valid email address"
+    },
+    submitHandler: function(form) {
+      form.submit();
+    }
+  });
+};
 
 
 var initCanvas = function($){

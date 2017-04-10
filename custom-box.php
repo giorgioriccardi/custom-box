@@ -9,7 +9,10 @@ Author URI: http://site.com
 
 function wptuts_scripts_basic(){
 		wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', array(), null, false );
-    wp_register_script('custom-box-js', plugins_url( 'custom-box.js', __FILE__ ), array( 'jquery' ), '1', true );
+		wp_register_script( 'jquery-validation', 'https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js', array(), null, false );
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('jquery-validation');
+		wp_register_script('custom-box-js', plugins_url( 'custom-box.js', __FILE__ ), array( 'jquery' ), '1', true );
     wp_enqueue_script('custom-box-js');
 		wp_register_style( 'custom-box-style', plugins_url( 'custom-box.css', __FILE__ ), array(), '1', 'all' );
     wp_enqueue_style( 'custom-box-style' );
@@ -23,7 +26,7 @@ add_action( 'wp_enqueue_scripts', 'wptuts_scripts_basic' );
 function html_custom_box_code() {
 	echo '<div id="custom-box">'.
 '	<h2>Place an order today</h2>'.
-'	<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" method="post" enctype="multipart/form-data">'.
+'	<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" name="custom-box-form" method="post" enctype="multipart/form-data">'.
 '		<div id="custom-box-form">'.
 '			<div id="custom-box-form-customize">'.
 '				<div class="custom-box-form-section custom-box-form-section-inline">'.

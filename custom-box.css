@@ -1,3 +1,5 @@
+#custom-box input, #custom-box textarea{font-family: Montserrat, "Helvetica Neue", sans-serif;}
+
 #custom-box-form {
     display: flex;
     /*font-family: Montserrat, "Helvetica Neue", sans-serif*/
@@ -129,3 +131,7 @@
   margin-bottom:10px;
   font-size:200%;
 }
+
+/* validation */
+#custom-box input.error{border: solid 1px red;}
+#custom-box label.error{color: red;}
