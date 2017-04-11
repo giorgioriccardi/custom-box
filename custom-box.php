@@ -32,7 +32,7 @@ function html_custom_box_code() {
 '				<div class="custom-box-form-section custom-box-form-section-inline">'.
 '					<h4>Measurement</h4>'.
 '					<div class="custom-box-form-section-inline-content">'.
-'						<label></><input type="radio" name="custom-box-metric-radio" value="imperial" selected="selected" class="box-units-radio" />Iperial</label>'.
+'						<label></><input type="radio" name="custom-box-metric-radio" value="imperial" checked="checked" class="box-units-radio" />Imperial</label>'.
 '						<label></><input type="radio" name="custom-box-metric-radio" value="metric" class="box-units-radio" />Metric</label>'.
 '					</div>'.
 '				</div>'.
@@ -42,21 +42,21 @@ function html_custom_box_code() {
 '						<div class="field">'.
 '							<label>Width</label>'.
 '							<div class="field-element">'.
-'								<input id="boxWidth" type="range" value="140" min="0" max="200" name="custom-box-width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) : ) . ">'.
+'								<input id="boxWidth" type="range" value="20" min="8" max="100" name="custom-box-width" value=" . ( isset( $_POST["custom-box-width"] ) ? esc_attr( $_POST["custom-box-width"] ) : ) . ">'.
 '							</div>'.
 '							<div class="range-label"><span id="boxWidthLabel"></span> <span class="box-mesaure-unit">in</span></div>'.
 '						</div>'.
 '						<div class="field">'.
 '							<label>Height</label>'.
 '							<div class="field-element">'.
-'								<input id="boxHeight" type="range" value="60" min="0" max="200" name="custom-box-height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) : ) . ">'.
+'								<input id="boxHeight" type="range" value="15" min="8" max="100" name="custom-box-height" value=" . ( isset( $_POST["custom-box-height"] ) ? esc_attr( $_POST["custom-box-height"] ) : ) . ">'.
 '							</div>'.
 '							<div class="range-label"><span id="boxHeightLabel"></span> <span class="box-mesaure-unit">in</span></div>'.
 '						</div>'.
 '						<div class="field">'.
 '							<label>Depth</label>'.
 '							<div class="field-element">'.
-'								<input id="boxDepth" type="range" value="90" min="0" max="200" name="custom-box-depth" value=" . ( isset( $_POST["custom-box-depth"] ) ? esc_attr( $_POST["custom-box-depth"] ) : ) . ">'.
+'								<input id="boxDepth" type="range" value="30" min="8" max="100" name="custom-box-depth">'.
 '							</div>'.
 '							<div class="range-label"><span id="boxDepthLabel"></span> <span class="box-mesaure-unit">in</span></div>'.
 '						</div>'.
@@ -67,32 +67,11 @@ function html_custom_box_code() {
 '					<div class="custom-box-form-section-content">'.
 '						<div class="field">'.
 '							<input type="hidden" id="boxHiddenColor" class="toggle" name="custom-box-color">'.
-'             <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="4000000" />'.
-'							<div class="field-element">'.
-'								<div class="box-color-btn" href style="background-color:#fff" box-color="#fff"></div>'.
-'								<div class="box-color-btn" href style="background-color:#e9e9eb" box-color="#e9e9eb"></div>'.
-'								<div class="box-color-btn" href style="background-color:#a6a6ad" box-color="#a6a6ad"></div>'.
-'								<div class="box-color-btn" href style="background-color:#666768" box-color="#666768"></div>'.
-'								<div class="box-color-btn" href style="background-color:#494f55" box-color="#494f55"></div>'.
-'								<div class="box-color-btn" href style="background-color:#d5c4a0" box-color="#d5c4a0"></div>'.
-'								<div class="box-color-btn" href style="background-color:#785c5a" box-color="#785c5a"></div>'.
-'								<div class="box-color-btn" href style="background-color:#fdc8d2" box-color="#fdc8d2"></div>'.
-'								<div class="box-color-btn" href style="background-color:#eb5c54" box-color="#eb5c54"></div>'.
-'								<div class="box-color-btn" href style="background-color:#c04a5a" box-color="#c04a5a	"></div>'.
+'							<div class="field-element" id="field-element-colors-1">'.
 '							</div>'.
 '						</div>'.
 '						<div class="field">'.
-'							<div class="field-element">'.
-'								<div class="box-color-btn" href style="background-color:#b0d451" box-color="#b0d451"></div>'.
-'								<div class="box-color-btn" href style="background-color:#298770" box-color="#298770"></div>'.
-'								<div class="box-color-btn" href style="background-color:#49655e" box-color="#49655e"></div>'.
-'								<div class="box-color-btn" href style="background-color:#575f58" box-color="#575f58"></div>'.
-'								<div class="box-color-btn" href style="background-color:#2880af" box-color="#2880af"></div>'.
-'								<div class="box-color-btn" href style="background-color:#6c7c91" box-color="#6c7c91"></div>'.
-'								<div class="box-color-btn" href style="background-color:#546479" box-color="#546479"></div>'.
-'								<div class="box-color-btn" href style="background-color:#455d88" box-color="#455d88"></div>'.
-'								<div class="box-color-btn" href style="background-color:#7f6e94" box-color="#7f6e94"></div>'.
-'								<div class="box-color-btn" href style="background-color:#000" box-color="#000"></div>'.
+'							<div class="field-element" id="field-element-colors-2">'.
 '							</div>'.
 '						</div>'.
 '					</div>'.

@@ -1,3 +1,7 @@
+#custom-box{
+  max-width: 900px;
+  margin: 0 auto;
+}
 #custom-box input, #custom-box textarea{font-family: Montserrat, "Helvetica Neue", sans-serif;}
 
 #custom-box-form {
@@ -14,7 +18,7 @@
 
 #custom-box-canvas {
     border: solid 1px #ccc;
-    background-image: url('./assets/3d-canvas-bg.jpg');
+    background-image: url('./assets/grid3-bg.jpg');
 }
 
 #custom-box h3{

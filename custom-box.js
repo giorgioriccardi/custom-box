@@ -2,7 +2,7 @@
 
 var canvasWidth = 400;
 var canvasHeight = 400;
-var box = { w: 140, h: 60, d: 90, color: '#ff0000', units: "metric" };
+var box = { w: 140, h: 60, d: 90, color: '#252d30', units: "imperial" };
 var wheelSize = { w: 32, h: 32 };
 
 var boxWidthInput, boxHeightInput, boxDepthInput, boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel;
@@ -16,10 +16,35 @@ var ninjaFormController;
 
 var boxAngle = 0.22;
 
+var colorsMap_1 = {'White':'#eceaeb',
+'Silver':'#979b9e',
+'Grey':'#474a48',
+'Dark Grey':'#333333',
+'Black':'#252d30',
+'Wine':'#5b3a37',
+'Desert Tan':'#d8bf93',
+'Yellow':'#fdde24',
+'Pink':'#e677a7',
+'Orange':'#ea3a33'};
+
+var colorsMap_2 = {'Red':'#b02735',
+'Neon Lime Green':'#a9d037',
+'Green':'#027352',
+'Forest Green':'#26473a',
+'Olive Drab':'#3c463b',
+'Medium Blue':'#0169a2',
+'Light Blue':'#51647c',
+'Dark Blue':'#21406f',
+'Navy':'#35475b',
+'Purple':'#6b5680'
+};
+
+
 jQuery(document).ready(function($) {
     // Code that uses jQuery's $ can follow here.
 
     loadAssets();
+    initColorSection($);
     var ctx  = initCanvas($);
     initInputFields($, ctx);
     initValidation($);
@@ -31,7 +56,7 @@ jQuery(document).ready(function($) {
 
 var loadAssets = function(ctx){
   console.log("pluginUrl", urls);
-  weightIcon.src = urls.pluginUrl + "/custom-box/assets/weight-icon.png";
+  weightIcon.src = urls.pluginUrl + "/custom-box/assets/weight-icon-dark.png";
   wheelImg.src = urls.pluginUrl + "/custom-box/assets/blue-wheel.png";
   wheelImg.onload = function() {wheelImg.loaded = true;};
   cornerImg.src = urls.pluginUrl + "/custom-box/assets/metal-corner.png";
@@ -40,6 +65,19 @@ var loadAssets = function(ctx){
   handleImg.onload = function() {handleImg.loaded = true; };
   catcheImg.src = urls.pluginUrl + "/custom-box/assets/metal-catche.png";
   catcheImg.onload = function() {catcheImg.loaded = true;};
+};
+
+var initColorSection = function($){
+var inHTML = "";
+$.each(colorsMap_1, function(name, value) {
+    inHTML += '<div class="box-color-btn" href style="background-color:'+value+'" box-color-name="'+name+'" box-color-hex="'+value+'" title="'+name+'"></div>';
+});
+$("#field-element-colors-1").html(inHTML);
+inHTML = "";
+$.each(colorsMap_2, function(name, value) {
+    inHTML += '<div class="box-color-btn" href style="background-color:'+value+'" box-color-name="'+name+'" box-color-hex="'+value+'" title="'+name+'"></div>';
+});
+$("#field-element-colors-2").html(inHTML);
 };
 
 var initInputFields = function($, ctx){
@@ -58,8 +96,8 @@ var initInputFields = function($, ctx){
   boxDepthInput.on("input change", function() { draw(ctx); });
   $('.box-color-btn').click(function(event) {
       event.preventDefault();
-      box.color = $(this).attr('box-color');
-      boxColorInput.val(box.color);
+      box.color = $(this).attr('box-color-hex');
+      boxColorInput.val($(this).attr('box-color-name'));
       draw(ctx);
   });
   $('#boxToggleWheel').change(function() {box.wheel = this.checked;draw(ctx);});
@@ -70,6 +108,12 @@ var initInputFields = function($, ctx){
         //event.preventDefault();
         box.units = $(this).val();
         $('.box-mesaure-unit').text(MEASUREMENT_UNITS[box.units].lengthLabel);
+        boxWidthInput.attr('min', MEASUREMENT_UNITS[box.units].minRange);
+        boxWidthInput.attr('max', MEASUREMENT_UNITS[box.units].maxRange);
+        boxHeightInput.attr('min', MEASUREMENT_UNITS[box.units].minRange);
+        boxHeightInput.attr('max', MEASUREMENT_UNITS[box.units].maxRange);
+        boxDepthInput.attr('min', MEASUREMENT_UNITS[box.units].minRange);
+        boxDepthInput.attr('max', MEASUREMENT_UNITS[box.units].maxRange);
         draw(ctx);
   });
 
@@ -142,13 +186,13 @@ var draw = function(ctx) {
     ctx.globalCompositeOperation = 'destination-over';
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    box.w = Number(boxWidthInput.val());
-    box.h = Number(boxHeightInput.val());
-    box.d = Number(boxDepthInput.val());
+    box.w = Number(boxWidthInput.val()*MEASUREMENT_UNITS[box.units].renderConversion);
+    box.h = Number(boxHeightInput.val()*MEASUREMENT_UNITS[box.units].renderConversion);
+    box.d = Number(boxDepthInput.val()*MEASUREMENT_UNITS[box.units].renderConversion);
     //box.color = boxColorInput.val();
-    boxWidthLabel.text(box.w);
-    boxHeightLabel.text(box.h);
-    boxDepthLabel.text(box.d);
+    boxWidthLabel.text(boxWidthInput.val());
+    boxHeightLabel.text(boxHeightInput.val());
+    boxDepthLabel.text(boxDepthInput.val());
 
     //hiddenBoxSize.val("width: " + box.w);
     if(box.handle)
@@ -250,8 +294,8 @@ var drawCube = function(ctx, x, y, box) {
 // 	document.getElementById("range").innerHTML=newValue;
 // }
 
-var MEASUREMENT_UNITS = {"imperial":{"conversionFactor":138.4, "lengthLabel":"in", "weightLabel":"lb"},
-						"metric":{"conversionFactor":5000, "lengthLabel":"cm", "weightLabel":"kg"}};
+var MEASUREMENT_UNITS = {"imperial":{"conversionFactor":138.4, "lengthLabel":"in", "weightLabel":"lb", "minRange": 8, "maxRange":100, "renderConversion": 1.8},
+						"metric":{"conversionFactor":5000, "lengthLabel":"cm", "weightLabel":"kg", "minRange": 20, "maxRange":254, "renderConversion": 0.7}};
 
 
 var drawWeightIcon = function(ctx, x, y) {
@@ -280,7 +324,7 @@ var doWeight = function(ctx, box) {
 	var textPosition = {"x": 62, y: canvasHeight-10}
 	drawWeightIcon(ctx, textPosition.x, textPosition.y);
 	ctx.font = "32px Arial";
-	ctx.fillStyle = "#fff";
+	ctx.fillStyle = "#000";
 	ctx.fillText(""+parseFloat(fweight) + " " + MEASUREMENT_UNITS[box.units].weightLabel,textPosition.x,textPosition.y);
 };
 
