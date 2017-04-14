@@ -12,9 +12,13 @@ var cornerImg = new Image();
 var handleImg = new Image();
 var catcheImg = new Image();
 
-var ninjaFormController;
-
-var boxAngle = 0.22;
+var lAngle = Math.PI/7;
+var rAngle = Math.PI/7;
+var lSin = Math.sin(lAngle);
+var lCos = Math.cos(lAngle);
+var rSin = Math.sin(rAngle);
+var rCos = Math.cos(rAngle);
+var delta =  12;
 
 var colorsMap_1 = {'White':'#eceaeb',
 'Silver':'#979b9e',
@@ -200,6 +204,7 @@ var draw = function(ctx) {
     if(box.catche)
       drawCatche(ctx, canvasWidth / 2,canvasHeight / 2 + box.h / 2,box);
 
+    drawCubeSides(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
     drawCube(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
 
     if(box.wheel)
@@ -213,9 +218,10 @@ var draw = function(ctx) {
 
 var drawWheel = function(ctx, x, y, box) {
     if(wheelImg.loaded){
-      ctx.drawImage(wheelImg, x - box.w, y - box.w * boxAngle);
-      ctx.drawImage(wheelImg, x - wheelSize.w * boxAngle*3, y - wheelSize.h * boxAngle);
-      ctx.drawImage(wheelImg, x + box.d - wheelSize.w, y - box.d * boxAngle);
+      //ctx.drawImage(wheelImg,x -box.w*lCos, y - box.h - box.w*lSin );
+      ctx.drawImage(wheelImg,x, y);
+      //ctx.drawImage(wheelImg, x - wheelSize.w * boxAngle*3, y - wheelSize.h * boxAngle);
+      //ctx.drawImage(wheelImg, x + box.d - wheelSize.w, y - box.d * boxAngle);
     }
 };
 
@@ -253,7 +259,7 @@ function shadeColor(color, percent) {
 }
 
 // Draw a cube to the specified specs
-var drawCube = function(ctx, x, y, box) {
+var drawCubeOld = function(ctx, x, y, box) {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x - box.w, y - box.w * boxAngle);
@@ -289,10 +295,139 @@ var drawCube = function(ctx, x, y, box) {
 
 }
 
-// function showValue(newValue)
-// {
-// 	document.getElementById("range").innerHTML=newValue;
-// }
+function drawCube(ctx, x, y, box) {
+  var color = "#bdcdd4";
+	ctx.beginPath();
+    ctx.moveTo(x, y - box.h);
+    ctx.lineTo(x -box.w*lCos, y - box.h - box.w*lSin);
+    ctx.lineTo(x -box.w*lCos, y - box.w*lSin);
+    ctx.lineTo(x, y );
+    ctx.closePath();
+    ctx.fillStyle = shadeColor(color, -10);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+    ctx.fill();
+
+	ctx.beginPath();
+    ctx.moveTo(x, y - box.h);
+    ctx.lineTo(x +box.d*rCos, y - box.h - box.d*rSin);
+    ctx.lineTo(x +box.d*rCos, y - box.d*rSin);
+    ctx.lineTo(x, y );
+    ctx.closePath();
+    ctx.fillStyle = shadeColor(color, 10);
+    ctx.strokeStyle = shadeColor(color, 50);
+    ctx.stroke();
+    ctx.fill();
+
+	ctx.beginPath();
+    ctx.moveTo(x, y - box.h);
+    ctx.lineTo(x -box.w*lCos, y - box.h - box.w*lSin);
+    ctx.lineTo(x -box.w*lCos + box.d*rCos, y - box.h - box.w*lSin-box.d*rSin);
+    ctx.lineTo(x +box.d*rCos, y - box.h - box.d*rSin);
+    ctx.closePath();
+    ctx.fillStyle = shadeColor(color, 20);
+    ctx.strokeStyle = shadeColor(color, 60);
+    ctx.stroke();
+    ctx.fill();
+  }
+
+
+function drawCubeSides(ctx, x, y, box) {
+
+  y = y-delta/2;
+  x = x-delta/2;
+  var w = box.w-delta;
+  var h = box.h-delta;
+  var h1 = h*2/3+delta/4;
+  var h2 = h*1/3+delta/4;
+  //left
+  ctx.beginPath();
+  ctx.moveTo(x, y - h);
+  ctx.lineTo(x -w*lCos, y - h - w*lSin);
+  ctx.lineTo(x -w*lCos, y - w*lSin - h1);
+  ctx.lineTo(x, y -h1);
+  ctx.closePath();
+  ctx.fillStyle = shadeColor(box.color, -10);
+  ctx.strokeStyle = box.color;
+  ctx.stroke();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(x, y - h + h2);
+  ctx.lineTo(x -w*lCos, y - h - w*lSin + h2);
+  ctx.lineTo(x -w*lCos, y - w*lSin );
+  ctx.lineTo(x, y);
+  ctx.closePath();
+  ctx.fillStyle = shadeColor(box.color, -10);
+  ctx.strokeStyle = box.color;
+  ctx.stroke();
+  ctx.fill();
+/*
+    ctx.beginPath();
+      ctx.moveTo(x, y - h);
+      ctx.lineTo(x -w*lCos, y - h - w*lSin);
+      ctx.lineTo(x -w*lCos, y - w*lSin);
+      ctx.lineTo(x, y );
+      ctx.closePath();
+      ctx.fillStyle = shadeColor(box.color, -10);
+      ctx.strokeStyle = box.color;
+      ctx.stroke();
+      ctx.fill();
+*/
+	x = x+delta;
+  h = box.h-delta;
+  d = box.d-delta;
+  // right
+/*  ctx.beginPath();
+    ctx.moveTo(x, y - h);
+    ctx.lineTo(x +d*rCos, y - h - d*rSin);
+    ctx.lineTo(x +d*rCos, y - d*rSin);
+    ctx.lineTo(x, y );
+    ctx.closePath();
+    ctx.fillStyle = shadeColor(box.color, 10);
+    ctx.strokeStyle = shadeColor(box.color, 50);
+    ctx.stroke();
+    ctx.fill(); */
+
+    ctx.beginPath();
+      ctx.moveTo(x, y - h);
+      ctx.lineTo(x +d*rCos, y - h - d*rSin);
+      ctx.lineTo(x +d*rCos, y - d*rSin-h1);
+      ctx.lineTo(x, y -h1);
+      ctx.closePath();
+      ctx.fillStyle = shadeColor(box.color, 10);
+      ctx.strokeStyle = shadeColor(box.color, 50);
+      ctx.stroke();
+      ctx.fill();
+
+      ctx.beginPath();
+        ctx.moveTo(x, y - h +h2);
+        ctx.lineTo(x +d*rCos, y - h - d*rSin +h2);
+        ctx.lineTo(x +d*rCos, y - d*rSin);
+        ctx.lineTo(x, y );
+        ctx.closePath();
+        ctx.fillStyle = shadeColor(box.color, 10);
+        ctx.strokeStyle = shadeColor(box.color, 50);
+        ctx.stroke();
+        ctx.fill();
+
+  x = x-delta/2;
+  y = y-delta;
+  w = box.w-delta;
+  d = box.d-delta;
+  // top
+  ctx.beginPath();
+    ctx.moveTo(x, y - h);
+    ctx.lineTo(x -w*lCos, y - h - w*lSin);
+    ctx.lineTo(x -w*lCos + d*rCos, y - h - w*lSin-d*rSin);
+    ctx.lineTo(x +d*rCos, y - h - d*rSin);
+    ctx.closePath();
+    ctx.fillStyle = shadeColor(box.color, 20);
+    ctx.strokeStyle = shadeColor(box.color, 60);
+    ctx.stroke();
+    ctx.fill();
+
+  }
 
 var MEASUREMENT_UNITS = {"imperial":{"conversionFactor":138.4, "lengthLabel":"in", "weightLabel":"lb", "minRange": 8, "maxRange":100, "renderConversion": 1.8},
 						"metric":{"conversionFactor":5000, "lengthLabel":"cm", "weightLabel":"kg", "minRange": 20, "maxRange":254, "renderConversion": 0.7}};
