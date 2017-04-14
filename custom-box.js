@@ -12,8 +12,8 @@ var cornerImg = new Image();
 var handleImg = new Image();
 var catcheImg = new Image();
 
-var lAngle = Math.PI/7;
-var rAngle = Math.PI/7;
+var lAngle = 0.146;//Math.PI/7;
+var rAngle = 0.457;//Math.PI/7;
 var lSin = Math.sin(lAngle);
 var lCos = Math.cos(lAngle);
 var rSin = Math.sin(rAngle);
@@ -53,8 +53,8 @@ jQuery(document).ready(function($) {
     initInputFields($, ctx);
     initValidation($);
     weightIcon.onload = function() {weightIcon.loaded = true;draw(ctx);};
-    if (window.File && window.FileList && window.FileReader)
-      initDragDrop($);
+  //  if (window.File && window.FileList && window.FileReader)
+  //    initDragDrop($);
 
 });
 
@@ -65,9 +65,9 @@ var loadAssets = function(ctx){
   wheelImg.onload = function() {wheelImg.loaded = true;};
   cornerImg.src = urls.pluginUrl + "/custom-box/assets/metal-corner.png";
   cornerImg.onload = function() {cornerImg.loaded = true;};
-  handleImg.src = urls.pluginUrl + "/custom-box/assets/metal-handle.png";
+  handleImg.src = urls.pluginUrl + "/custom-box/assets/handle-metal.png";
   handleImg.onload = function() {handleImg.loaded = true; };
-  catcheImg.src = urls.pluginUrl + "/custom-box/assets/metal-catche.png";
+  catcheImg.src = urls.pluginUrl + "/custom-box/assets/surface-catch.png";
   catcheImg.onload = function() {catcheImg.loaded = true;};
 };
 
@@ -157,7 +157,7 @@ var initCanvas = function($){
   $('#custom-box-panel').append(canvas);
   return canvas[0].getContext('2d');
 };
-
+/*
 var FileDragHover = function(e) {
 	e.stopPropagation();
 	e.preventDefault();
@@ -183,7 +183,7 @@ var initDragDrop = function($) {
       console.log("files",files);
 
  });
-}
+} */
 // Animation function
 var draw = function(ctx) {
     // clear the canvas
@@ -199,16 +199,18 @@ var draw = function(ctx) {
     boxDepthLabel.text(boxDepthInput.val());
 
     //hiddenBoxSize.val("width: " + box.w);
+    var x = canvasWidth / 2;
+    var y =2* canvasHeight / 3 + box.h / 2;
     if(box.handle)
-      drawHandle(ctx, canvasWidth / 2,canvasHeight / 2 + box.h / 2,box);
+      drawHandle(ctx, x, y, box);
     if(box.catche)
-      drawCatche(ctx, canvasWidth / 2,canvasHeight / 2 + box.h / 2,box);
+      drawCatche(ctx, x, y, box);
 
-    drawCubeSides(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
-    drawCube(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
+    drawCubeSides(ctx,  x, y, box);
+    drawCube(ctx,  x, y, box);
 
     if(box.wheel)
-      drawWheel(ctx, canvasWidth / 2, canvasHeight / 2 + box.h / 2,box);
+      drawWheel(ctx,  x, y, box);
 
 
 
@@ -218,15 +220,15 @@ var draw = function(ctx) {
 
 var drawWheel = function(ctx, x, y, box) {
     if(wheelImg.loaded){
-      //ctx.drawImage(wheelImg,x -box.w*lCos, y - box.h - box.w*lSin );
-      ctx.drawImage(wheelImg,x, y);
-      //ctx.drawImage(wheelImg, x - wheelSize.w * boxAngle*3, y - wheelSize.h * boxAngle);
-      //ctx.drawImage(wheelImg, x + box.d - wheelSize.w, y - box.d * boxAngle);
+      var wheelXGap = 18;
+      var wheelYGap = 8;
+      ctx.drawImage(wheelImg,x-wheelXGap, y-wheelYGap);
+      ctx.drawImage(wheelImg,x -box.w*lCos, y - box.w*lSin-wheelYGap);
+      ctx.drawImage(wheelImg,x +box.d*rCos-wheelXGap*2, y - box.d*rSin);
     }
 };
 
 var drawHandle = function(ctx, x, y, box) {
-  console.log("handleImg", box,box.h,  y,Math.trunc(box.h*0.5) );
     if(handleImg.loaded){
       ctx.drawImage(handleImg, x - box.w/2- handleImg.width/2, y -box.h/2 - handleImg.height);
     }
@@ -234,8 +236,13 @@ var drawHandle = function(ctx, x, y, box) {
 
 var drawCatche = function(ctx, x, y, box) {
     if(catcheImg.loaded){
-      ctx.drawImage(catcheImg, x - box.w*0.9,  y - box.w * boxAngle -box.h*2/3 );
-      ctx.drawImage(catcheImg, x - box.w*0.3 * boxAngle*3, y - box.w * boxAngle/3 -box.h*2/3 );
+      var w = box.w-delta;
+      var h = box.h-delta;
+      var h1 = h*2/3+delta/4+16;
+
+      ctx.drawImage(catcheImg, x -w*lCos, y - w*lSin - h1);
+      ctx.drawImage(catcheImg, x-28, y -h1-4);
+      //ctx.drawImage(catcheImg, x - box.w*0.3 *3, y - box.w /3 -box.h*2/3 );
     }
 };
 
@@ -258,42 +265,6 @@ function shadeColor(color, percent) {
     return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
 }
 
-// Draw a cube to the specified specs
-var drawCubeOld = function(ctx, x, y, box) {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x - box.w, y - box.w * boxAngle);
-    ctx.lineTo(x - box.w, y - box.h - box.w * boxAngle);
-    ctx.lineTo(x, y - box.h * 1);
-    ctx.closePath();
-    ctx.fillStyle = shadeColor(box.color, -10);
-    ctx.strokeStyle = box.color;
-    ctx.stroke();
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x + box.d, y - box.d * boxAngle);
-    ctx.lineTo(x + box.d, y - box.h - box.d * boxAngle);
-    ctx.lineTo(x, y - box.h * 1);
-    ctx.closePath();
-    ctx.fillStyle = shadeColor(box.color, 10);
-    ctx.strokeStyle = shadeColor(box.color, 50);
-    ctx.stroke();
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(x, y - box.h);
-    ctx.lineTo(x - box.w, y - box.h - box.w * boxAngle);
-    ctx.lineTo(x - box.w + box.d, y - box.h - (box.w * boxAngle + box.d * boxAngle));
-    ctx.lineTo(x + box.d, y - box.h - box.d * boxAngle);
-    ctx.closePath();
-    ctx.fillStyle = shadeColor(box.color, 20);
-    ctx.strokeStyle = shadeColor(box.color, 60);
-    ctx.stroke();
-    ctx.fill();
-
-}
 
 function drawCube(ctx, x, y, box) {
   var color = "#bdcdd4";
@@ -362,32 +333,11 @@ function drawCubeSides(ctx, x, y, box) {
   ctx.strokeStyle = box.color;
   ctx.stroke();
   ctx.fill();
-/*
-    ctx.beginPath();
-      ctx.moveTo(x, y - h);
-      ctx.lineTo(x -w*lCos, y - h - w*lSin);
-      ctx.lineTo(x -w*lCos, y - w*lSin);
-      ctx.lineTo(x, y );
-      ctx.closePath();
-      ctx.fillStyle = shadeColor(box.color, -10);
-      ctx.strokeStyle = box.color;
-      ctx.stroke();
-      ctx.fill();
-*/
+
 	x = x+delta;
   h = box.h-delta;
   d = box.d-delta;
   // right
-/*  ctx.beginPath();
-    ctx.moveTo(x, y - h);
-    ctx.lineTo(x +d*rCos, y - h - d*rSin);
-    ctx.lineTo(x +d*rCos, y - d*rSin);
-    ctx.lineTo(x, y );
-    ctx.closePath();
-    ctx.fillStyle = shadeColor(box.color, 10);
-    ctx.strokeStyle = shadeColor(box.color, 50);
-    ctx.stroke();
-    ctx.fill(); */
 
     ctx.beginPath();
       ctx.moveTo(x, y - h);
