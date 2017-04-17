@@ -23,7 +23,9 @@ function wptuts_scripts_basic(){
 
 add_action( 'wp_enqueue_scripts', 'wptuts_scripts_basic' );
 
+
 function html_custom_box_code() {
+
 	echo '<div id="custom-box">'.
 '	<h2>Place an order today</h2>'.
 '	<form action="' . esc_url( $_SERVER['REQUEST_URI'] ) . '" name="custom-box-form" method="post" enctype="multipart/form-data">'.
@@ -66,7 +68,7 @@ function html_custom_box_code() {
 '					<h4>Colours</h4>'.
 '					<div class="custom-box-form-section-content">'.
 '						<div class="field">'.
-'							<input type="hidden" id="boxHiddenColor" class="toggle" name="custom-box-color">'.
+'							<input type="hidden" id="boxHiddenColor"name="custom-box-color">'.
 '							<div class="field-element" id="field-element-colors-1">'.
 '							</div>'.
 '						</div>'.
@@ -90,11 +92,14 @@ function html_custom_box_code() {
 '						<label for="boxToggleCorner"></label>'.
 '					</div>'.
 '				</div>'.
-'				<div class="custom-box-form-section custom-box-form-section-inline">'.
-'					<h4>Handles </h4>'.
-'					<div class="custom-box-form-section-inline-content">'.
-'						<input type="checkbox" id="boxToggleHandle" class="toggle" name="custom-box-handle">'.
-'						<label for="boxToggleHandle"></label>'.
+'				<div class="custom-box-form-section">'.
+'					<h4>Handles</h4>'.
+'					<div class="custom-box-form-section-content">'.
+'						<div class="field">'.
+'							<input type="hidden" id="boxHiddenHandle" name="custom-box-handle">'.
+'							<div class="field-element" id="field-element-handle">'.
+'							</div>'.
+'						</div>'.
 '					</div>'.
 '				</div>'.
 '				<div class="custom-box-form-section custom-box-form-section-inline">'.
@@ -102,6 +107,20 @@ function html_custom_box_code() {
 '					<div class="custom-box-form-section-inline-content">'.
 '						<input type="checkbox" id="boxToggleCatche" class="toggle" name="custom-box-catche">'.
 '						<label for="boxToggleCatche"></label>'.
+'					</div>'.
+'				</div>'.
+'				<div class="custom-box-form-section custom-box-form-section-inline">'.
+'					<h4>Foam thickness</h4>'.
+'					<div class="custom-box-form-section-inline-content">'.
+'						<select id="boxFoamSelect" class="" name="custom-box-foam">'.
+'						</select>'.
+'					</div>'.
+'				</div>'.
+'				<div class="custom-box-form-section custom-box-form-section-inline">'.
+'					<h4>Laminate Width</h4>'.
+'					<div class="custom-box-form-section-inline-content">'.
+'						<select id="boxLaminateSelect" class="" name="custom-box-laminate">'.
+'						</select>'.
 '					</div>'.
 '				</div>'.
 '			</div>'.
@@ -160,10 +179,24 @@ function html_custom_box_code() {
 '			</div>'.
 '		</div>'.
 '	</form>'.
+' <div id="assetZoom">'.
+' </div>'.
 '</div>';
 }
 
 function format_email_order() {
+	$foamMap = array(
+		'carpet'=>'Carpet',
+		'half-foam'=>'&frac12;&rsquo;&rsquo; Foam',
+		'one-foam'=>'1&rsquo;&rsquo; Foam',
+		'two-foam'=>'2&rsquo;&rsquo; Foam'
+	);
+
+	$laminateMap = array(
+		'one-quarter-dino'=>'&frac14;&rsquo;&rsquo; Dino-Lite',
+		'one-quarter-ply'=>'&frac14;&rsquo;&rsquo; Ply Laminate',
+		'one-half-ply'=>'&frac12;&rsquo;&rsquo; Ply Laminate'
+	);
 	// sanitize form values
 	$boxMetric = sanitize_text_field( $_POST["custom-box-metric-radio"] ) == 'Imperial'?'in':'cm';
 	$boxWidth  = sanitize_text_field( $_POST["custom-box-width"] );
@@ -173,7 +206,10 @@ function format_email_order() {
 	$boxWhell  = sanitize_text_field( $_POST["custom-box-wheel"] ) =='on'?'Yes':'No';
 	$boxCorner  = sanitize_text_field( $_POST["custom-box-corner"] ) =='on'?'Yes':'No';
 	$boxCatche  = sanitize_text_field( $_POST["custom-box-catche"] ) =='on'?'Yes':'No';
-	$boxHandles  = sanitize_text_field( $_POST["custom-box-handle"] ) =='on'?'Yes':'No';
+	$boxHandles  = sanitize_text_field( $_POST["custom-box-handle"] );
+
+	$boxFoam = sanitize_text_field( $foamMap[$_POST["custom-box-foam"]] );
+	$boxLaminate = sanitize_text_field( $laminateMap[$_POST["custom-box-laminate"]] );
 
 	$firstname  = sanitize_text_field( $_POST["firstname"] );
 	$lastname  = sanitize_text_field( $_POST["lastname"] );
@@ -199,12 +235,10 @@ function format_email_order() {
 	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Corner</strong></td><td style="padding: .5em 0;">'.$boxCorner.'</td></tr>'.
 	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Catche</strong></td><td style="padding: .5em 0;">'.$boxCatche.'</td></tr>'.
 	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Handles</strong></td><td style="padding: .5em 0;">'.$boxHandles.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Foam thickness</strong></td><td style="padding: .5em 0;">'.$boxFoam.'</td></tr>'.
+	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Laminate Width</strong></td><td style="padding: .5em 0;">'.$boxLaminate.'</td></tr>'.
 	'<tr style="border-bottom: solid 1px #ccc; width: 1px; white-space: nowrap;"><td style="padding: .5em 2em .5em 0;"><strong>Customer description</strong></td><td style="padding: .5em 0;">'.$description.'</td></tr>'.
   '</tbody></table>';
-
-
-	//$message = '<div> <b>new order</b> '.$firstname.' </div>';
-
 	return $message;
 
 }

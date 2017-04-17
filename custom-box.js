@@ -5,11 +5,13 @@ var canvasHeight = 400;
 var box = { w: 140, h: 60, d: 90, color: '#252d30', units: "imperial" };
 var wheelSize = { w: 32, h: 32 };
 
-var boxWidthInput, boxHeightInput, boxDepthInput, boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel;
+var boxWidthInput, boxHeightInput, boxDepthInput, boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel,
+  boxHandleInput, assetZoom;
+var mainOffset;
 var weightIcon = new Image();
 var wheelImg = new Image();
 var cornerImg = new Image();
-var handleImg = new Image();
+var handleImgs = {};
 var catcheImg = new Image();
 
 var lAngle = 0.146;//Math.PI/7;
@@ -44,11 +46,31 @@ var colorsMap_2 = {'Red':'#b02735',
 };
 
 
+
+var handleMap = {'500-149800-Surface-Handle': '500-149800 - Surface Handle' ,
+'500-110800-Recessed-Handle': '500-110800 - Recessed Handle',
+'500-310801-Strap-Handle': '500-310801 - Strap Handle',
+'500-326801-Attache-Handle': '500-326801 - Attach&eacute; Handle'};
+
+var foamMap = {
+  'carpet':'Carpet',
+  'half-foam':'&frac12;&rsquo;&rsquo; Foam',
+  'one-foam':'1&rsquo;&rsquo; Foam',
+  'two-foam':'2&rsquo;&rsquo; Foam',
+};
+
+var laminateMap = {'one-quarter-dino':'&frac14;&rsquo;&rsquo; Dino-Lite',
+'one-quarter-ply':'&frac14;&rsquo;&rsquo; Ply Laminate',
+'one-half-ply':'&frac12;&rsquo;&rsquo; Ply Laminate'};
+
 jQuery(document).ready(function($) {
     // Code that uses jQuery's $ can follow here.
 
-    loadAssets();
+    loadAssets($);
     initColorSection($);
+    initHandleSection($);
+    initLaminateSelect($);
+    initFoamSelect($);
     var ctx  = initCanvas($);
     initInputFields($, ctx);
     initValidation($);
@@ -58,33 +80,69 @@ jQuery(document).ready(function($) {
 
 });
 
-var loadAssets = function(ctx){
+var loadAssets = function($){
   console.log("pluginUrl", urls);
   weightIcon.src = urls.pluginUrl + "/custom-box/assets/weight-icon-dark.png";
   wheelImg.src = urls.pluginUrl + "/custom-box/assets/blue-wheel.png";
   wheelImg.onload = function() {wheelImg.loaded = true;};
   cornerImg.src = urls.pluginUrl + "/custom-box/assets/metal-corner.png";
   cornerImg.onload = function() {cornerImg.loaded = true;};
-  handleImg.src = urls.pluginUrl + "/custom-box/assets/handle-metal.png";
-  handleImg.onload = function() {handleImg.loaded = true; };
+
+  $.each(handleMap, function(name, value) {
+    var img = new Image();
+    img.src = urls.pluginUrl + "/custom-box/assets/"+name+"-small.png";
+    img.onload = function() {handleImgs[name] = img; img.loaded = true; };
+  });
+
+  handleImgs.src = urls.pluginUrl + "/custom-box/assets/handle-metal.png";
+  //handleImg.onload = function() {handleImg.loaded = true; };
   catcheImg.src = urls.pluginUrl + "/custom-box/assets/surface-catch.png";
   catcheImg.onload = function() {catcheImg.loaded = true;};
 };
 
 var initColorSection = function($){
-var inHTML = "";
-$.each(colorsMap_1, function(name, value) {
-    inHTML += '<div class="box-color-btn" href style="background-color:'+value+'" box-color-name="'+name+'" box-color-hex="'+value+'" title="'+name+'"></div>';
-});
-$("#field-element-colors-1").html(inHTML);
-inHTML = "";
-$.each(colorsMap_2, function(name, value) {
-    inHTML += '<div class="box-color-btn" href style="background-color:'+value+'" box-color-name="'+name+'" box-color-hex="'+value+'" title="'+name+'"></div>';
-});
-$("#field-element-colors-2").html(inHTML);
+    var inHTML = "";
+    $.each(colorsMap_1, function(name, value) {
+        inHTML += '<div class="box-color-btn" href style="background-color:'+value+'" box-color-name="'+name+'" box-color-hex="'+value+'" title="'+name+'"></div>';
+    });
+    $("#field-element-colors-1").html(inHTML);
+    inHTML = "";
+    $.each(colorsMap_2, function(name, value) {
+        inHTML += '<div class="box-color-btn" href style="background-color:'+value+'" box-color-name="'+name+'" box-color-hex="'+value+'" title="'+name+'"></div>';
+    });
+    $("#field-element-colors-2").html(inHTML);
 };
 
+var initHandleSection = function($){
+    var inHTML = "";
+    $.each(handleMap, function(name, value) {
+      inHTML += '<div class="cutsom-box-asset-image-button box-handle-btn" box-handle="'+name+'" id="'+name+'"><img src="' +urls.pluginUrl + '/custom-box/assets/'+name+'-small.png" alt="'+value+'" title="'+value+'"  /></div>';
+    });
+    inHTML += '<div class="cutsom-box-asset-remove-link box-handle-btn "  box-handle="None"><a class="remove-asset">No handle</a></div>';
+    $("#field-element-handle").html(inHTML);
+};
+
+
+var initFoamSelect = function($){
+  var inHTML = "";
+  $.each(foamMap, function(name, value) {
+      inHTML += '<option value="'+name+'">'+value+'</option>';
+  });
+  $("#boxFoamSelect").html(inHTML);
+
+}
+var initLaminateSelect = function($){
+  var inHTML = "";
+  $.each(laminateMap, function(name, value) {
+      inHTML += '<option value="'+name+'">'+value+'</option>';
+  });
+  $("#boxLaminateSelect").html(inHTML);
+
+}
+
 var initInputFields = function($, ctx){
+  mainOffset = $("#custom-box").offset();
+
   boxWidthInput = $('#boxWidth');
   boxHeightInput = $('#boxHeight');
   boxDepthInput = $('#boxDepth');
@@ -92,7 +150,8 @@ var initInputFields = function($, ctx){
   boxWidthLabel = $('#boxWidthLabel');
   boxHeightLabel = $('#boxHeightLabel');
   boxDepthLabel = $('#boxDepthLabel');
-
+  boxHandleInput = $('#boxHiddenHandle');
+  assetZoom = $('#assetZoom');
 
 
   boxWidthInput.on("input change", function() { draw(ctx); });
@@ -103,6 +162,32 @@ var initInputFields = function($, ctx){
       box.color = $(this).attr('box-color-hex');
       boxColorInput.val($(this).attr('box-color-name'));
       draw(ctx);
+  });
+
+  $('.box-handle-btn').click(function(event) {
+    console.log("box-handle-btn",$(this).attr('box-handle'));
+      $('.box-handle-btn').removeClass("active");
+      $(this).addClass("active");
+      event.preventDefault();
+      box.handle = $(this).attr('box-handle');
+      if(box.handle != 'None')
+        boxHandleInput.val(handleMap[box.handle]);
+      else
+        boxHandleInput.val(box.handle);
+      draw(ctx);
+  });
+
+  $(".box-handle-btn").mouseover(function(event){
+      var handle = $(this).attr('box-handle');
+      assetZoom.css('top', event.pageY - mainOffset.top + 150);
+      assetZoom.css('left', event.pageX - mainOffset.left);
+      assetZoom.html("<img src='"+urls.pluginUrl + "/custom-box/assets/"+handle+".png' /><label>"+handleMap[handle]+"</label>");
+      assetZoom.show();
+
+  });
+
+  $(".box-handle-btn").mouseleave(function(event){
+        assetZoom.hide();
   });
   $('#boxToggleWheel').change(function() {box.wheel = this.checked;draw(ctx);});
   $('#boxToggleCorner').change(function() {box.corner = this.checked;draw(ctx);});
@@ -229,8 +314,8 @@ var drawWheel = function(ctx, x, y, box) {
 };
 
 var drawHandle = function(ctx, x, y, box) {
-    if(handleImg.loaded){
-      ctx.drawImage(handleImg, x - box.w/2- handleImg.width/2, y -box.h/2 - handleImg.height);
+    if(typeof handleImgs[box.handle] != 'undefined' && handleImgs[box.handle] != null && handleImgs[box.handle] != 'None' && handleImgs[box.handle].loaded){
+      ctx.drawImage(handleImgs[box.handle], x - box.w/2- handleImgs[box.handle].width/2, y -box.h/2 - handleImgs[box.handle].height);
     }
 };
 
@@ -245,13 +330,14 @@ var drawCatche = function(ctx, x, y, box) {
       //ctx.drawImage(catcheImg, x - box.w*0.3 *3, y - box.w /3 -box.h*2/3 );
     }
 };
-
+/*
 var drawHandle = function(ctx, x, y, box) {
   console.log("handleImg", box,box.h,  y,Math.trunc(box.h*0.5) );
     if(handleImg.loaded){
       ctx.drawImage(handleImg, x - box.w/2- handleImg.width/2, y -box.h/2 - handleImg.height);
     }
 };
+*/
 
 // Colour adjustment function
 // Nicked from http://stackoverflow.com/questions/5560248
