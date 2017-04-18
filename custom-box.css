@@ -146,7 +146,7 @@
 #custom-box .custom-box-form-section-content .box-color-btn:hover {
     cursor: pointer;
 }
-
+/*
 #custom-box .custom-box-form-section-content .box-wheel-btn {
     display: inline-block;
     width: 22px;
@@ -160,7 +160,7 @@
 #custom-box .custom-box-form-section-content .box-wheel-btn:hover {
     cursor: pointer;
 }
-
+*/
 
 #custom-box-form-order .field{
   margin: .5em 0;
@@ -180,7 +180,7 @@
 #dragandrophandler
 {
   border:2px dotted #0B85A1;
-  width:400px;
+  width:auto;
   color:#92AAB0;
   text-align:left;vertical-align:middle;
   padding:10px 10px 10 10px;

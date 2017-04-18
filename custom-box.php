@@ -78,35 +78,44 @@ function html_custom_box_code() {
 '						</div>'.
 '					</div>'.
 '				</div>'.
-'				<div class="custom-box-form-section custom-box-form-section-inline">'.
-'					<h4>Wheel </h4>'.
-'					<div class="custom-box-form-section-inline-content">'.
-'						<input type="checkbox" id="boxToggleWheel" class="toggle" name="custom-box-wheel">'.
-'						<label for="boxToggleWheel"></label>'.
+'				<div class="custom-box-form-section">'.
+'					<h4>Wheel</h4>'.
+'					<div class="custom-box-form-section-content">'.
+'						<div class="field">'.
+'							<input type="hidden" id="boxHidden-wheel" name="custom-box-wheel">'.
+'							<div class="field-element" id="field-element-wheel">'.
+'							</div>'.
+'						</div>'.
 '					</div>'.
 '				</div>'.
-'				<div class="custom-box-form-section custom-box-form-section-inline">'.
+'				<div class="custom-box-form-section">'.
 '					<h4>Corners </h4>'.
-'					<div class="custom-box-form-section-inline-content">'.
-'						<input type="checkbox" id="boxToggleCorner" class="toggle" name="custom-box-corner">'.
-'						<label for="boxToggleCorner"></label>'.
+'					<div class="custom-box-form-section-content">'.
+'						<div class="field">'.
+'							<input type="hidden" id="boxHidden-corner" name="custom-box-corner">'.
+'							<div class="field-element" id="field-element-corner">'.
+'							</div>'.
+'						</div>'.
 '					</div>'.
 '				</div>'.
 '				<div class="custom-box-form-section">'.
 '					<h4>Handles</h4>'.
 '					<div class="custom-box-form-section-content">'.
 '						<div class="field">'.
-'							<input type="hidden" id="boxHiddenHandle" name="custom-box-handle">'.
+'							<input type="hidden" id="boxHidden-handle" name="custom-box-handle">'.
 '							<div class="field-element" id="field-element-handle">'.
 '							</div>'.
 '						</div>'.
 '					</div>'.
 '				</div>'.
-'				<div class="custom-box-form-section custom-box-form-section-inline">'.
+'				<div class="custom-box-form-section">'.
 '					<h4>Catches </h4>'.
-'					<div class="custom-box-form-section-inline-content">'.
-'						<input type="checkbox" id="boxToggleCatche" class="toggle" name="custom-box-catche">'.
-'						<label for="boxToggleCatche"></label>'.
+'					<div class="custom-box-form-section-content">'.
+'						<div class="field">'.
+'							<input type="hidden" id="boxHidden-catche" name="custom-box-catche">'.
+'							<div class="field-element" id="field-element-catche">'.
+'							</div>'.
+'						</div>'.
 '					</div>'.
 '				</div>'.
 '				<div class="custom-box-form-section custom-box-form-section-inline">'.
@@ -203,9 +212,9 @@ function format_email_order() {
 	$boxHeight = sanitize_text_field( $_POST["custom-box-height"] );
 	$boxDepth  = sanitize_text_field( $_POST["custom-box-depth"] );
 	$boxColor  = sanitize_text_field( $_POST["custom-box-color"] );
-	$boxWhell  = sanitize_text_field( $_POST["custom-box-wheel"] ) =='on'?'Yes':'No';
-	$boxCorner  = sanitize_text_field( $_POST["custom-box-corner"] ) =='on'?'Yes':'No';
-	$boxCatche  = sanitize_text_field( $_POST["custom-box-catche"] ) =='on'?'Yes':'No';
+	$boxWhell  = sanitize_text_field( $_POST["custom-box-wheel"] );
+	$boxCorner  = sanitize_text_field( $_POST["custom-box-corner"] );
+	$boxCatche  = sanitize_text_field( $_POST["custom-box-catche"] );
 	$boxHandles  = sanitize_text_field( $_POST["custom-box-handle"] );
 
 	$boxFoam = sanitize_text_field( $foamMap[$_POST["custom-box-foam"]] );
@@ -259,7 +268,7 @@ function custom_box_data() {
 				$headers = array('Content-Type: text/html; charset=UTF-8',"From: $firstname $lastname <$email>" . "\r\n");
 
 				$message = format_email_order();
-				//echo $message;
+				echo $message;
 				if ( ! function_exists( 'wp_handle_upload' ) )
 					require_once( ABSPATH . 'wp-admin/includes/file.php' );
 				$uploadedfile = $_FILES['box-image'];

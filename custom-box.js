@@ -6,13 +6,11 @@ var box = { w: 140, h: 60, d: 90, color: '#252d30', units: "imperial" };
 var wheelSize = { w: 32, h: 32 };
 
 var boxWidthInput, boxHeightInput, boxDepthInput, boxColorInput, boxWidthLabel, boxHeightLabel, boxDepthLabel,
-  boxHandleInput, assetZoom;
+  assetZoom;
+var boxAssetHiddenInput = {};
 var mainOffset;
 var weightIcon = new Image();
-var wheelImg = new Image();
-var cornerImg = new Image();
-var handleImgs = {};
-var catcheImg = new Image();
+var assetImgs = {};
 
 var lAngle = 0.146;//Math.PI/7;
 var rAngle = 0.457;//Math.PI/7;
@@ -46,11 +44,31 @@ var colorsMap_2 = {'Red':'#b02735',
 };
 
 
+var assetTypes = ['wheel','handle', 'catche', 'corner'];
 
-var handleMap = {'500-149800-Surface-Handle': '500-149800 - Surface Handle' ,
-'500-110800-Recessed-Handle': '500-110800 - Recessed Handle',
-'500-310801-Strap-Handle': '500-310801 - Strap Handle',
-'500-326801-Attache-Handle': '500-326801 - Attach&eacute; Handle'};
+var assetMaps = { 'wheel':
+                  {
+                    '511-6484854-Swivel-4in': '511-6484854 - Swivel - 4in',
+                    '511-6484854-Swivel-lock-4in': '511-6484854 - Swivel lock 4in'
+                  },
+                  'handle':
+                  { '500-149800-Surface-Handle': '500-149800 - Surface Handle' ,
+                    '500-110800-Recessed-Handle': '500-110800 - Recessed Handle',
+                    '500-310801-Strap-Handle': '500-310801 - Strap Handle',
+                    '500-326801-Attache-Handle': '500-326801 - Attach&eacute; Handle'
+                  },
+                  'catche':
+                  {
+                    '501-570800-Recessed-Catch': '501-570800 - Recessed Catch' ,
+                    '501-612801-Surface-Catch': '501-612801 - Surface Catch',
+                    '505-1829800-Stop-Hinge': '505-1829800 - Stop - Hinge'
+                  },
+                  'corner':{
+                    '502-1002800-Ball-Corner': '502-1002800 - Ball Corner' ,
+                    '502-1036800-Large-Square-Corner': '502-1036800-  Large Square Corner' ,
+                    '502-1204800-Medium-Ball-Corner': '502-1204800 - Medium -Ball Corner'
+                  }
+                };
 
 var foamMap = {
   'carpet':'Carpet',
@@ -68,10 +86,16 @@ jQuery(document).ready(function($) {
 
     loadAssets($);
     initColorSection($);
-    initHandleSection($);
+    //initHandleSection($);
+
+    //initAssetSection($, 'catche', catcheMap);
     initLaminateSelect($);
     initFoamSelect($);
     var ctx  = initCanvas($);
+    $.each(assetTypes, function( index, assetType ) {
+      initAssetSection($, ctx, assetType);
+      boxAssetHiddenInput[assetType] = $('#boxHidden-'+assetType);
+    });
     initInputFields($, ctx);
     initValidation($);
     weightIcon.onload = function() {weightIcon.loaded = true;draw(ctx);};
@@ -83,22 +107,20 @@ jQuery(document).ready(function($) {
 var loadAssets = function($){
   console.log("pluginUrl", urls);
   weightIcon.src = urls.pluginUrl + "/custom-box/assets/weight-icon-dark.png";
-  wheelImg.src = urls.pluginUrl + "/custom-box/assets/blue-wheel.png";
-  wheelImg.onload = function() {wheelImg.loaded = true;};
-  cornerImg.src = urls.pluginUrl + "/custom-box/assets/metal-corner.png";
-  cornerImg.onload = function() {cornerImg.loaded = true;};
 
-  $.each(handleMap, function(name, value) {
-    var img = new Image();
-    img.src = urls.pluginUrl + "/custom-box/assets/"+name+"-small.png";
-    img.onload = function() {handleImgs[name] = img; img.loaded = true; };
+  $.each(assetTypes, function( index, assetType ) {
+    assetImgs[assetType] = {};
+    $.each(assetMaps[assetType], function(name, value) {
+      var img = new Image();
+      img.src = urls.pluginUrl + "/custom-box/assets/"+name+"-small.png";
+      img.onload = function() {assetImgs[assetType][name] = img; img.loaded = true; };
+    });
   });
 
-  handleImgs.src = urls.pluginUrl + "/custom-box/assets/handle-metal.png";
-  //handleImg.onload = function() {handleImg.loaded = true; };
-  catcheImg.src = urls.pluginUrl + "/custom-box/assets/surface-catch.png";
-  catcheImg.onload = function() {catcheImg.loaded = true;};
+
+
 };
+
 
 var initColorSection = function($){
     var inHTML = "";
@@ -113,13 +135,43 @@ var initColorSection = function($){
     $("#field-element-colors-2").html(inHTML);
 };
 
-var initHandleSection = function($){
+var initAssetSection = function($, ctx, assetType){
     var inHTML = "";
-    $.each(handleMap, function(name, value) {
-      inHTML += '<div class="cutsom-box-asset-image-button box-handle-btn" box-handle="'+name+'" id="'+name+'"><img src="' +urls.pluginUrl + '/custom-box/assets/'+name+'-small.png" alt="'+value+'" title="'+value+'"  /></div>';
+    var assetMap = assetMaps[assetType];
+    $.each(assetMap, function(name, value) {
+      inHTML += '<div class="cutsom-box-asset-image-button box-'+assetType+'-btn" box-'+assetType+'="'+name+'" id="'+name+'">'+
+                '<img src="' +urls.pluginUrl + '/custom-box/assets/'+name+'-small.png" alt="'+value+'" title="'+value+'"  /></div>';
     });
-    inHTML += '<div class="cutsom-box-asset-remove-link box-handle-btn "  box-handle="None"><a class="remove-asset">No handle</a></div>';
-    $("#field-element-handle").html(inHTML);
+    inHTML += '<div class="cutsom-box-asset-remove-link box-'+assetType+'-btn "  box-'+assetType+'="None"><a class="remove-asset">No '+assetType+'</a></div>';
+    $("#field-element-"+assetType).html(inHTML);
+
+    $(".box-"+assetType+"-btn").mouseover(function(event){
+        var asset = $(this).attr('box-'+assetType);
+        if(asset!='None'){
+          assetZoom.css('top', event.pageY - mainOffset.top + 200);
+          assetZoom.css('left', event.pageX - mainOffset.left);
+          assetZoom.html("<img src='"+urls.pluginUrl + "/custom-box/assets/"+asset+".png' /><label>"+assetMaps[assetType][asset]+"</label>");
+          assetZoom.show();
+        }
+
+    });
+
+    $(".box-"+assetType+"-btn").mouseleave(function(event){
+          assetZoom.hide();
+    });
+
+    $(".box-"+assetType+"-btn").click(function(event) {
+        $(".box-"+assetType+"-btn").removeClass("active");
+        $(this).addClass("active");
+        event.preventDefault();
+        box[assetType] = $(this).attr('box-'+assetType);
+        if(box[assetType] != 'None')
+          boxAssetHiddenInput[assetType].val(assetMap[box[assetType]]);
+        else
+          boxAssetHiddenInput[assetType].val(box[assetType]);
+        draw(ctx);
+    });
+
 };
 
 
@@ -150,7 +202,7 @@ var initInputFields = function($, ctx){
   boxWidthLabel = $('#boxWidthLabel');
   boxHeightLabel = $('#boxHeightLabel');
   boxDepthLabel = $('#boxDepthLabel');
-  boxHandleInput = $('#boxHiddenHandle');
+
   assetZoom = $('#assetZoom');
 
 
@@ -164,31 +216,7 @@ var initInputFields = function($, ctx){
       draw(ctx);
   });
 
-  $('.box-handle-btn').click(function(event) {
-    console.log("box-handle-btn",$(this).attr('box-handle'));
-      $('.box-handle-btn').removeClass("active");
-      $(this).addClass("active");
-      event.preventDefault();
-      box.handle = $(this).attr('box-handle');
-      if(box.handle != 'None')
-        boxHandleInput.val(handleMap[box.handle]);
-      else
-        boxHandleInput.val(box.handle);
-      draw(ctx);
-  });
 
-  $(".box-handle-btn").mouseover(function(event){
-      var handle = $(this).attr('box-handle');
-      assetZoom.css('top', event.pageY - mainOffset.top + 150);
-      assetZoom.css('left', event.pageX - mainOffset.left);
-      assetZoom.html("<img src='"+urls.pluginUrl + "/custom-box/assets/"+handle+".png' /><label>"+handleMap[handle]+"</label>");
-      assetZoom.show();
-
-  });
-
-  $(".box-handle-btn").mouseleave(function(event){
-        assetZoom.hide();
-  });
   $('#boxToggleWheel').change(function() {box.wheel = this.checked;draw(ctx);});
   $('#boxToggleCorner').change(function() {box.corner = this.checked;draw(ctx);});
   $('#boxToggleHandle').change(function() {box.handle = this.checked;draw(ctx);});
@@ -283,13 +311,14 @@ var draw = function(ctx) {
     boxHeightLabel.text(boxHeightInput.val());
     boxDepthLabel.text(boxDepthInput.val());
 
-    //hiddenBoxSize.val("width: " + box.w);
     var x = canvasWidth / 2;
     var y =2* canvasHeight / 3 + box.h / 2;
     if(box.handle)
       drawHandle(ctx, x, y, box);
     if(box.catche)
       drawCatche(ctx, x, y, box);
+    if(box.corner)
+      drawCorner(ctx, x, y, box);
 
     drawCubeSides(ctx,  x, y, box);
     drawCube(ctx,  x, y, box);
@@ -304,40 +333,43 @@ var draw = function(ctx) {
 }
 
 var drawWheel = function(ctx, x, y, box) {
-    if(wheelImg.loaded){
+    var assetImg = assetImgs['wheel'][box.wheel] ;
+
+    if(typeof assetImg != 'undefined' && assetImg != null && assetImg != 'None' && assetImg.loaded){
       var wheelXGap = 18;
       var wheelYGap = 8;
-      ctx.drawImage(wheelImg,x-wheelXGap, y-wheelYGap);
-      ctx.drawImage(wheelImg,x -box.w*lCos, y - box.w*lSin-wheelYGap);
-      ctx.drawImage(wheelImg,x +box.d*rCos-wheelXGap*2, y - box.d*rSin);
+      ctx.drawImage(assetImg,x-wheelXGap, y-wheelYGap);
+      ctx.drawImage(assetImg,x -box.w*lCos, y - box.w*lSin-wheelYGap);
+      ctx.drawImage(assetImg,x +box.d*rCos-wheelXGap*2, y - box.d*rSin);
     }
 };
 
 var drawHandle = function(ctx, x, y, box) {
-    if(typeof handleImgs[box.handle] != 'undefined' && handleImgs[box.handle] != null && handleImgs[box.handle] != 'None' && handleImgs[box.handle].loaded){
-      ctx.drawImage(handleImgs[box.handle], x - box.w/2- handleImgs[box.handle].width/2, y -box.h/2 - handleImgs[box.handle].height);
+    var assetImg = assetImgs['handle'][box.handle] ;
+    if(typeof assetImg != 'undefined' && assetImg != null && assetImg != 'None' && assetImg.loaded){
+      ctx.drawImage(assetImg, x - box.w/2- assetImg.width/2, y -box.h/2 - assetImg.height);
     }
 };
 
 var drawCatche = function(ctx, x, y, box) {
-    if(catcheImg.loaded){
+  var assetImg = assetImgs['catche'][box.catche] ;
+  if(typeof assetImg != 'undefined' && assetImg != null && assetImg != 'None' && assetImg.loaded){
       var w = box.w-delta;
       var h = box.h-delta;
       var h1 = h*2/3+delta/4+16;
 
-      ctx.drawImage(catcheImg, x -w*lCos, y - w*lSin - h1);
-      ctx.drawImage(catcheImg, x-28, y -h1-4);
-      //ctx.drawImage(catcheImg, x - box.w*0.3 *3, y - box.w /3 -box.h*2/3 );
+      ctx.drawImage(assetImg, x -w*lCos, y - w*lSin - h1);
+      ctx.drawImage(assetImg, x-4*assetImg.width/3, y -h1-4);
     }
 };
-/*
-var drawHandle = function(ctx, x, y, box) {
-  console.log("handleImg", box,box.h,  y,Math.trunc(box.h*0.5) );
-    if(handleImg.loaded){
-      ctx.drawImage(handleImg, x - box.w/2- handleImg.width/2, y -box.h/2 - handleImg.height);
+
+var drawCorner = function(ctx, x, y, box) {
+    var assetImg = assetImgs['corner'][box.corner] ;
+    if(typeof assetImg != 'undefined' && assetImg != null && assetImg != 'None' && assetImg.loaded){
+      ctx.drawImage(assetImg, x - assetImg.width/2, y - box.h- assetImg.height/2);
     }
 };
-*/
+
 
 // Colour adjustment function
 // Nicked from http://stackoverflow.com/questions/5560248
@@ -498,26 +530,3 @@ var doWeight = function(ctx, box) {
 	ctx.fillStyle = "#000";
 	ctx.fillText(""+parseFloat(fweight) + " " + MEASUREMENT_UNITS[box.units].weightLabel,textPosition.x,textPosition.y);
 };
-
-/*
-function changeunits(element) {
-    un = element.value;
-    conv = 1;
-    if ((un == "met" && convfact == 5000) || (un == "imp" && convfact == 138.4)) return;
-    if (un == "imp") {
-        lenunt = "in.gif";
-        wgtunt = "lb.gif";
-        convfact = 138.4;
-    } else {
-        lenunt = "cm.gif";
-        wgtunt = "kg.gif";
-        convfact = 5000;
-    }
-    document.images["LENIM"].src = "../art/" + lenunt;
-    document.images["HIGIM"].src = "../art/" + lenunt;
-    document.images["WIDIM"].src = "../art/" + lenunt;
-    document.images["VOLIM"].src = "../art/" + wgtunt;
-    form = element.form;
-    form.div.value = convfact;
-    doweight(form);
-}*/
