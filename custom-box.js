@@ -342,6 +342,8 @@ var drawWheel = function(ctx, x, y, box) {
       ctx.drawImage(assetImg,x -box.w*lCos, y - box.w*lSin-wheelYGap);
       ctx.drawImage(assetImg,x +box.d*rCos-wheelXGap*2, y - box.d*rSin);
     }
+    // wheel.src = "http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
+    wheel.src = location.pathname + "wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
 };
 
 var drawHandle = function(ctx, x, y, box) {
