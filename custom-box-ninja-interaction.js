@@ -32,14 +32,14 @@ jQuery(document).ready(function($) {
 });
 
 var loadAssets = function(ctx){
-  weightIcon.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/weight-icon.png";
-  wheelImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/blue-wheel.png";
+  weightIcon.src = glob( plugin_dir_path( __FILE__ ) . "assets/weight-icon.png";
+  wheelImg.src = glob( plugin_dir_path( __FILE__ ) . "assets/blue-wheel.png";
   wheelImg.onload = function() {wheelImg.loaded = true;};
-  cornerImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-corner.png";
+  cornerImg.src = glob( plugin_dir_path( __FILE__ ) . "assets/metal-corner.png";
   cornerImg.onload = function() {cornerImg.loaded = true;};
-  handleImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-handle.png";
+  handleImg.src = glob( plugin_dir_path( __FILE__ ) . "assets/metal-handle.png";
   handleImg.onload = function() {handleImg.loaded = true; };
-  catcheImg.src = "/DinosaursDemo/wp-content/plugins/custom-box/assets/metal-catche.png";
+  catcheImg.src = glob( plugin_dir_path( __FILE__ ) . "assets/metal-catche.png";
   catcheImg.onload = function() {catcheImg.loaded = true;};
 };
 
