@@ -86,7 +86,8 @@ var drawWheel = function(ctx, x, y, wx, wy, h) {
         ctx.drawImage(wheel, x - wheelSize.w * 1.5, y - wheelSize.h * 0.5);
         ctx.drawImage(wheel, x + wy - wheelSize.w, y - wy * 0.5);
     }
-    wheel.src = "http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
+    // wheel.src = "http://localhost/dropbox/grc-local/wordpress/DinosaursDemo/wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
+    wheel.src = location.pathname + "wp-content/plugins/custom-box/assets/" + box.wheel + ".svg";
 };
 // Colour adjustment function
 // Nicked from http://stackoverflow.com/questions/5560248
